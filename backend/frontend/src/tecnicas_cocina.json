@@ -1,0 +1,123 @@
+[
+    {
+      "id": 1,
+      "nombre": "Salteado",
+      "descripcion": "Método de cocción rápida en el que los ingredientes se cocinan a fuego alto con una pequeña cantidad de aceite, moviéndolos constantemente.",
+      "ejemplo": "Saltear vegetales con ajo y aceite de oliva."
+    },
+    {
+      "id": 2,
+      "nombre": "Horneado",
+      "descripcion": "Método de cocción en el que los alimentos se cocinan en un horno a temperaturas moderadas a altas, utilizando calor seco.",
+      "ejemplo": "Hornear un pastel a 180°C durante 30 minutos."
+    },
+    {
+      "id": 3,
+      "nombre": "Grillado",
+      "descripcion": "Método de cocción en el que los alimentos se cocinan a la parrilla, utilizando calor directo y alto.",
+      "ejemplo": "Grillar carne de res en una parrilla exterior."
+    },
+    {
+      "id": 4,
+      "nombre": "Cocción al vapor",
+      "descripcion": "Método de cocción en el que los alimentos se cocinan utilizando vapor de agua, generalmente con una olla especial para vapor.",
+      "ejemplo": "Cocinar brócoli al vapor."
+    },
+    {
+      "id": 5,
+      "nombre": "Hervido",
+      "descripcion": "Método de cocción en el que los alimentos se sumergen en agua hirviendo hasta que se cocinan completamente.",
+      "ejemplo": "Hervir pasta hasta que esté al dente."
+    },
+    {
+      "id": 6,
+      "nombre": "Freído",
+      "descripcion": "Método de cocción en el que los alimentos se sumergen en aceite caliente, cocinándose rápidamente y obteniendo una textura crujiente.",
+      "ejemplo": "Freír papas para hacer papas fritas."
+    },
+    {
+      "id": 7,
+      "nombre": "Estofado",
+      "descripcion": "Método de cocción en el que los alimentos se cocinan lentamente en líquido, a fuego bajo, para que se mezclen los sabores.",
+      "ejemplo": "Estofar carne de res con vegetales y especias."
+    },
+    {
+      "id": 8,
+      "nombre": "Asado",
+      "descripcion": "Método de cocción en el que los alimentos se cocinan en un horno o sobre una parrilla, generalmente a temperaturas más altas que el horneado.",
+      "ejemplo": "Asar un pollo en el horno con hierbas."
+    },
+    {
+      "id": 9,
+      "nombre": "Pochado",
+      "descripcion": "Método de cocción en el que los alimentos se cocinan suavemente en líquido a una temperatura baja, justo por debajo del punto de ebullición.",
+      "ejemplo": "Pochado de huevos en agua con vinagre."
+    },
+    {
+      "id": 10,
+      "nombre": "Rehogado",
+      "descripcion": "Método de cocción en el que los alimentos se cocinan a fuego medio en una pequeña cantidad de grasa, a menudo con el objetivo de ablandar y desarrollar sabores.",
+      "ejemplo": "Rehogar cebolla y ajo para una salsa."
+    },
+    {
+      "id": 11,
+      "nombre": "Gratinado",
+      "descripcion": "Método de cocción en el que los alimentos se cubren con una capa de queso o pan rallado y se cocinan bajo el grill para formar una costra dorada y crujiente.",
+      "ejemplo": "Gratinar un plato de papas al horno con queso."
+    },
+    {
+      "id": 12,
+      "nombre": "Marinado",
+      "descripcion": "Proceso de remojar alimentos en una mezcla de líquidos y especias para mejorar el sabor y la ternura antes de cocinarlos.",
+      "ejemplo": "Marinar pollo en una mezcla de yogur y especias."
+    },
+    {
+      "id": 13,
+      "nombre": "Batido",
+      "descripcion": "Método de preparación en el que los ingredientes se mezclan vigorosamente hasta obtener una mezcla suave y uniforme.",
+      "ejemplo": "Batir ingredientes para un batido de frutas."
+    },
+    {
+      "id": 14,
+      "nombre": "Sofrito",
+      "descripcion": "Método de preparación en el que se cocina una mezcla de ingredientes básicos, como cebolla, ajo y pimientos, en aceite para formar una base de sabor.",
+      "ejemplo": "Preparar un sofrito para una paella."
+    },
+    {
+      "id": 15,
+      "nombre": "Cocimiento a presión",
+      "descripcion": "Método de cocción en el que se utilizan altas presiones de vapor para cocinar alimentos más rápidamente.",
+      "ejemplo": "Cocinar legumbres en una olla a presión."
+    },
+    {
+      "id": 16,
+      "nombre": "Blanqueado",
+      "descripcion": "Método de cocción breve en el que los alimentos se sumergen en agua hirviendo y luego en agua fría para detener la cocción.",
+      "ejemplo": "Blanquear almendras para pelarlas."
+    },
+    {
+      "id": 17,
+      "nombre": "Reducción",
+      "descripcion": "Proceso de cocción en el que un líquido se cocina a fuego lento para evaporar parte del agua y concentrar su sabor.",
+      "ejemplo": "Reducir una salsa de vino tinto hasta que espese."
+    },
+    {
+      "id": 18,
+      "nombre": "Deshidratación",
+      "descripcion": "Método de conservación en el que se elimina el agua de los alimentos para prevenir su deterioro.",
+      "ejemplo": "Deshidratar frutas para hacer chips."
+    },
+    {
+      "id": 19,
+      "nombre": "Escudillado",
+      "descripcion": "Método de cocción en el que los alimentos se sumergen en un líquido caliente y se cocinan brevemente, similar al blanqueado.",
+      "ejemplo": "Escudillar tomates para quitar la piel."
+    },
+    {
+      "id": 20,
+      "nombre": "Afilado",
+      "descripcion": "Proceso de afilar cuchillos y utensilios de cocina para mantenerlos en óptimas condiciones de uso.",
+      "ejemplo": "Afilado de cuchillos con una piedra de afilar."
+    }
+  ]
+  
