@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { supabase } from "../../../../code/supabase"; // Asegúrate de que la ruta sea correcta
+import { supabase } from "../../../code/supabase"; // Asegúrate de que la ruta sea correcta
 
 function VideosSection({ darkMode }) {
   const [videos, setVideos] = useState([])
