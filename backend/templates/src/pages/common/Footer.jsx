@@ -6,7 +6,7 @@ const Footer = ({ darkMode }) => {
   return (
     <footer
       className={
-        darkMode ? "bg-slate-800 text-white" : "bg-gray-300 text-slate-600"
+        darkMode ? "bg-slate-800 text-white" : "bg-gray-600 text-slate-100"
       }
     >
       <div className="grid justify-center items-center text-center p-6 space-y-6">

@@ -23,7 +23,7 @@ const Carousel = ({ images, darkMode }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       nextSlide();
-    }, 7000);
+    }, 700000);
 
     return () => clearInterval(interval); // Limpia el intervalo al desmontar el componente
   }, []);
@@ -46,6 +46,9 @@ const Carousel = ({ images, darkMode }) => {
               />
             </div>
           ))}
+                                <div className="flex flex-col gap-2 text-left ">
+                      <h1>Bienvenido a CookHub, Tu pagina de Recetas Favorita</h1>
+                    </div>
         </div>
       </div>
       <div>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FacebookIcon, InstagramIcon, TwitterIcon } from "../common/Icons";
+import { BookmarkIcon, BookOpenIcon } from "@heroicons/react/24/outline";
 import ButtonFav from "../common/ButtonFav";
 import RatingStars from "../common/ratingStars";
 
@@ -8,11 +9,9 @@ const Recipe = ({ receta, darkMode, showFavoriteOption, isRecetasPage }) => {
   const [isInstruccionesOpen, setInstruccionesOpen] = useState(false);
 
   const getIngredients = () => {
-    let ingredientes = [];
-    receta.ingredientes.forEach((item) => {
-      ingredientes.push(`${item.medida} ${item.ingrediente}`);
-    });
-    return ingredientes;
+    return receta.ingredientes.map(
+      (item) => `${item.medida} ${item.ingrediente}`
+    );
   };
 
   const getInstructions = () => {
@@ -32,24 +31,24 @@ const Recipe = ({ receta, darkMode, showFavoriteOption, isRecetasPage }) => {
 
   return (
     <section
-      className={`rounded-2xl border-4 shadow-md mb-4 p-4 w-full transition-colors duration-300 ${
+      className={`rounded-2xl shadow-md mb-4 p-4 w-full transition-colors duration-300 ${
         darkMode
-          ? "bg-gray-800 border-gray-700 text-white"
-          : "bg-white border-slate-300 text-black"
+          ? "bg-gray-800 text-white"
+          : "bg-white text-black"
       }`}
     >
-      <img
-        src={receta.imagen}
-        className="w-full h-80 object-cover rounded-t-lg"
-        alt={receta.titulo}
-      />
       <div>
+        <img
+          src={receta.imagen}
+          className="mx-auto w-full sm:h-56 h-96 object-cover"
+          alt={receta.titulo}
+        />
         <h5 className="text-xl font-semibold mb-5 mt-5">{receta.titulo}</h5>
         <div>
           {isRecetasPage && (
             <div className="flex flex-col md:flex-row md:justify-between md:items-center space-y-2 md:space-y-0 md:space-x-1">
               <ButtonFav />
-              <RatingStars recipeId={receta.id}/>
+              <RatingStars recipeId={receta.id} />
             </div>
           )}
         </div>
@@ -61,11 +60,12 @@ const Recipe = ({ receta, darkMode, showFavoriteOption, isRecetasPage }) => {
         >
           <div className="accordion-item mt-2">
             <h2
-              className={`text-lg font-semibold cursor-pointer py-2 border-b ${
+              className={`text-lg font-semibold cursor-pointer flex items-center py-2 border-b ${
                 darkMode ? "border-gray-600" : "border-gray-200"
               }`}
               onClick={() => setIngredientesOpen(!isIngredientesOpen)}
             >
+              <BookmarkIcon className="w-6 h-6 mr-2" />
               Ingredientes
             </h2>
             {isIngredientesOpen && (
@@ -82,11 +82,12 @@ const Recipe = ({ receta, darkMode, showFavoriteOption, isRecetasPage }) => {
           </div>
           <div className="accordion-item mt-2">
             <h2
-              className={`text-lg font-semibold cursor-pointer py-2 border-b ${
+              className={`text-lg font-semibold cursor-pointer flex items-center py-2 border-b ${
                 darkMode ? "border-gray-600" : "border-gray-200"
               }`}
               onClick={() => setInstruccionesOpen(!isInstruccionesOpen)}
             >
+              <BookOpenIcon className="w-6 h-6 mr-2" />
               Instrucciones
             </h2>
             {isInstruccionesOpen && (
