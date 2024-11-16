@@ -23,5 +23,7 @@ CREATE TABLE usuarios (
     nombre TEXT NOT NULL,
     correo_electronico TEXT UNIQUE NOT NULL,
     contrasena TEXT NOT NULL,
-    -- Otros campos según sea necesario
+    preferencia TEXT NOT NULL,
+    productos JSONB NOT NULL,
+    fecha_creacion DATE NOT NULL,
 );

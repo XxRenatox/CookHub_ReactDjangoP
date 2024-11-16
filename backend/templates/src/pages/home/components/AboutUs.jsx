@@ -30,7 +30,7 @@ function AboutUs() {
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto px-6">
           {options.map((item, index) => (
-            <div key={index + 1} className="border-gray-800 space-y-5 p-5 border-2 rounded-xl">
+            <div key={index + 1} className="border-gray-800  space-y-5 p-5 border-2 rounded-xl">
               <div className="text-left">
                 {<item.icon className="mr-3 h-10 w-10" aria-hidden="true" />}
                 <h3 className="text-xl font-bold">{item.title}</h3>

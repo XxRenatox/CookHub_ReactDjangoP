@@ -1,9 +1,18 @@
-export const fetchRecetasFromSupabase = async (categoria, filtro, isHomePage) => {
+export const fetchRecetasFromSupabase = async ({ categoria, popular, cantidad }) => {
   try {
     // Construir la URL de la petición
-    const url = isHomePage
-      ? `http://localhost:8000/api/recetas?calificacion=true`  // Si es la homePage, filtrar por popularidad
-      : `http://localhost:8000/api/recetas?categoria=${categoria || null}&filtro=${filtro || null}`;
+    let url = `http://localhost:8000/api/recetas?`;
+
+    if (popular) {
+      url += `calificacion=true`; // Si es la página de inicio, filtrar por popularidad
+    } else {
+      url += `categoria=${categoria}`;
+    }
+
+    // Agregar el parámetro de cantidad si está definido
+    if (cantidad) {
+      url += `&cantidad=${cantidad}`;
+    }
 
     const response = await fetch(url);
     

@@ -16,13 +16,14 @@ function Home() {
         options={[
           { title: "Inicio", href: "#home" },
           { title: "Recetario", href: "#recetas" },
-          { title: "Técnicas de Cocina", href: "#tecnicas" },
+          { title: "Sobre Nosotros", href: "#aboutus" },
+          { title: "Subscripciones", href: "#subs" },
           { title: "Contacto", href: "#info" },
         ]}
       />
       <main
         className={`${
-          darkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"
+          darkMode ? "bg-gray-900 text-white" : "bg-slate-200 text-gray-900"
         } transition-colors duration-300`}
       >
         {/* Hero Section */}
@@ -58,30 +59,36 @@ function Home() {
           </div>
         </section>
 
-        {/* Sobre Nosotros */}
-        <section className="mt-12 py-12">
-            <AboutUs /> 
-        </section>
-
         {/* Recetas Populares */}
+
         <section id="recetas" className="mt-12 max-w-6xl mx-auto p-5">
-          <h2 className="text-2xl font-bold text-left mb-8">
+          <h2 className="text-3xl font-bold text-left mb-8">
             Recetas más populares
           </h2>
-          <Recipes homeSection darkMode={darkMode} />
+          <Recipes popular darkMode={darkMode} cantidad={3}/>
+        </section>
+
+        {/* Sobre Nosotros */}
+
+        <section className="mt-12 " id="aboutus">
+          <AboutUs />
         </section>
 
         {/* Suscripciones Premium */}
+
         <section
+          id="subs"
           className={`${
-            darkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"
+            darkMode ? "bg-gray-900 text-white" : "bg-slate-200 text-gray-900"
           } transition-colors duration-300 mt-12 py-12`}
         >
           <Subscriptions />
         </section>
       </main>
 
-      <Footer darkMode={darkMode} />
+      <footer id="info">
+        <Footer darkMode={darkMode} />
+      </footer>
     </>
   );
 }

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { FacebookIcon, InstagramIcon, TwitterIcon } from "../common/Icons";
+import { FacebookIcon, InstagramIcon, TwitterIcon } from "./Icons";
 import { BookmarkIcon, BookOpenIcon } from "@heroicons/react/24/outline";
-import ButtonFav from "../common/ButtonFav";
-import RatingStars from "../common/ratingStars";
+import ButtonFav from "./ButtonFav";
+import RatingStars from "./ratingStars";
 
-const Recipe = ({ receta, darkMode, showFavoriteOption, isRecetasPage }) => {
+const Recipe = ({ receta, darkMode, isRecetasPage }) => {
   const [isIngredientesOpen, setIngredientesOpen] = useState(false);
   const [isInstruccionesOpen, setInstruccionesOpen] = useState(false);
 
@@ -37,13 +37,12 @@ const Recipe = ({ receta, darkMode, showFavoriteOption, isRecetasPage }) => {
           : "bg-white text-black"
       }`}
     >
-      <div>
         <img
           src={receta.imagen}
-          className="mx-auto w-full sm:h-56 h-96 object-cover"
+          className="mx-auto w-full sm:h-60 h-96 object-cover"
           alt={receta.titulo}
         />
-        <h5 className="text-xl font-semibold mb-5 mt-5">{receta.titulo}</h5>
+        <h5 className="text-xl font-bold mb-5 mt-5">{receta.titulo}</h5>
         <div>
           {isRecetasPage && (
             <div className="flex flex-col md:flex-row md:justify-between md:items-center space-y-2 md:space-y-0 md:space-x-1">
@@ -102,7 +101,6 @@ const Recipe = ({ receta, darkMode, showFavoriteOption, isRecetasPage }) => {
               </div>
             )}
           </div>
-          {showFavoriteOption && (
             <div className="flex space-x-4 mt-4 justify-center">
               <a
                 href={facebookShareURL}
@@ -134,9 +132,7 @@ const Recipe = ({ receta, darkMode, showFavoriteOption, isRecetasPage }) => {
                 />
               </a>
             </div>
-          )}
         </div>
-      </div>
     </section>
   );
 };

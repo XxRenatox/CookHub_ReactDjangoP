@@ -25,5 +25,6 @@ urlpatterns = [
     path('api/recetas', views.getRecipes),
     path('api/recetas/<uuid:recipe_id>/calificacion', views.submit_rating, name='submit_rating'),
     path('api/login/', views.loginUser, name="login_user"),
-    path('api/register/', views.registerUser, name="register_user")
+    path('api/register/', views.registerUser, name="register_user"),
+    path('api/recetas/create/', views.create_recipe, name='create_recipe'),
 ]

@@ -5,6 +5,9 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates") 
 
+SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93ZnFrdXJ3cnVibmRoY21zeXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjgxOTU0NTMsImV4cCI6MjA0Mzc3MTQ1M30.NbVrg2PMHyaVV9wafWqxGhyjrxPGH9W5dkD8-IWUKzU'
+SUPABASE_URL = 'https://owfqkurwrubndhcmsyzb.supabase.co'
+
 SECRET_KEY = 'django-insecure-oa)#0lzuh@f%liveq$y_i+g7a2)4uiwc$k-+mny4g75+k)d36('
 
 DEBUG = True
@@ -86,7 +89,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "frontend", "dist"),
+    os.path.join(BASE_DIR, "templates", "dist"),
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")

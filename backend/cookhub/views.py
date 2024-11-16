@@ -1,14 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from cookhub.forms import RecetaForm
+from cookhub.models import Receta
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate
+from backend.settings import SUPABASE_KEY, SUPABASE_URL
+import io
 import json
 import datetime
 import jwt
 from supabase import create_client, Client
 
-url = 'https://owfqkurwrubndhcmsyzb.supabase.co'
-key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93ZnFrdXJ3cnVibmRoY21zeXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjgxOTU0NTMsImV4cCI6MjA0Mzc3MTQ1M30.NbVrg2PMHyaVV9wafWqxGhyjrxPGH9W5dkD8-IWUKzU'
+url = SUPABASE_URL
+key = SUPABASE_KEY
 
 supabase: Client = create_client(url, key)
 
@@ -26,14 +29,15 @@ def getRecipes(request):
     categoria = request.GET.get('categoria', None)
     filtro = request.GET.get('filtro', None)
     pop = request.GET.get('calificacion', None)
+    cantidad = request.GET.get('cantidad', None)
 
-    query = supabase.table("recetas").select("*").limit(6)
+    query = supabase.table("recetas").select("*").limit(cantidad)
 
     if pop:
-        query = query.order("calificacion", desc=True).limit(3)  # Cambié a 'desc=True'
+        query = query.order("calificacion", desc=True).limit(cantidad)  # Cambié a 'desc=True'
 
     if categoria:
-        query = query.eq("categoria", categoria)
+        query = query.eq("categoria", categoria).limit(cantidad)
 
     if filtro:
         query = query.eq("nivel_dificultad", filtro)
@@ -129,6 +133,69 @@ def registerUser(request):
             supabase.table("usuarios").insert({"nombre": username, "correo_electronico": email, "contrasena": passwd}).execute()
 
             return JsonResponse({'message': 'Usuario creado con éxito'}, status=201)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Error en el formato de los datos enviados. Asegúrate de enviar un JSON válido.'}, status=400)
+        except Exception as e:
+            print(e)  # Para depuración
+            return JsonResponse({'error': 'Error interno del servidor. Inténtalo nuevamente más tarde.'}, status=500)
+
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+@csrf_exempt
+def create_recipe(request):
+    if request.method == "POST":
+        try:
+            # Obtener datos desde request.POST y archivo desde request.FILES
+            titulo = request.POST.get("titulo")
+            instrucciones = request.POST.get("instrucciones")
+            ingredientes = request.POST.get("ingredientes")
+            categoria = request.POST.get("categoria")
+            area = request.POST.get("area")
+            dificultad = request.POST.get("dificultad")
+            nombre_usuario = request.POST.get("usuario")
+            image_file = request.FILES.get("imagen")
+
+            # Validación de datos
+            if not titulo or not instrucciones or not ingredientes:
+                return JsonResponse({'error': 'Faltan campos obligatorios.'}, status=400)
+
+            # Guardar la imagen en Supabase Storage
+            image_url = None
+            if image_file:
+                bucket_name = 'recetas'
+                image_path = f"{titulo}_{image_file.name}"
+
+                # Leer el contenido del archivo directamente en memoria
+                image_data = image_file.read()
+
+                # Subir el archivo a Supabase
+                upload_response = supabase.storage.from_(bucket_name).upload(image_path, image_data)
+
+                # Verificar si la carga fue exitosa
+                if upload_response.status_code == 201:
+                    # Obtener la URL pública de la imagen
+                    image_url = supabase.storage.from_(bucket_name).get_public_url(image_path)
+                else:
+                    return JsonResponse({'error': 'Error al subir la imagen.'}, status=upload_response.status_code)
+
+            # Guardar la receta en la tabla `recetas`
+            response = supabase.table('recetas').insert({
+                "titulo": titulo,
+                "imagen": image_url,
+                "instrucciones": instrucciones,
+                "ingredientes": ingredientes,
+                "categoria": categoria,
+                "area": area,
+                "calificacion":0,
+                "nivel_dificultad": dificultad,
+                "nombre_usuario": nombre_usuario
+            }).execute()
+
+            if response.status_code == 201:
+                return JsonResponse({'message': 'Receta creada con éxito'}, status=201)
+            else:
+                return JsonResponse({'error': 'Error al guardar la receta en la base de datos'}, status=response.status_code)
 
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Error en el formato de los datos enviados. Asegúrate de enviar un JSON válido.'}, status=400)

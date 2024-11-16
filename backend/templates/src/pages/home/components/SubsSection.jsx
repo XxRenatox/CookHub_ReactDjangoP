@@ -5,13 +5,15 @@ function Subscriptions() {
   return (
     <>
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold mb-4">
-          ¡Únete a nuestras Suscripciones Premium!
-        </h2>
-        <p className="mb-6">
-          Obtén acceso a recetas exclusivas, herramientas avanzadas y mucho más.
-          ¡Tu primer mes es gratis por tiempo limitado!
-        </p>
+        <div className="text-center">
+          <h2 className="text-4xl font-bold mb-4">
+            ¡Únete a nuestras Suscripciones Premium!
+          </h2>
+          <p className="text-xl mb-6">
+            Obtén acceso a recetas exclusivas, herramientas avanzadas y mucho
+            más. ¡Tu primer mes es gratis por tiempo limitado!
+          </p>
+        </div>
         <div className="flex justify-center">
           <Link
             to="/subs#"
