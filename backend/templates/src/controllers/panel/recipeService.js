@@ -1,29 +1,84 @@
-export const fetchRecetasFromSupabase = async ({ categoria, popular, cantidad }) => {
+export const fetchRecetasFromSupabase = async ({ categoria, popular, cantidad, filtro }) => {
   try {
-    // Construir la URL de la petición
     let url = `http://localhost:8000/api/recetas?`;
-
+    
+    // Construir URL con todos los parámetros posibles
+    const params = new URLSearchParams();
+    
     if (popular) {
-      url += `calificacion=true`; // Si es la página de inicio, filtrar por popularidad
-    } else {
-      url += `categoria=${categoria}`;
+      params.append('calificacion', 'true');
+    }
+    if (categoria) {
+      params.append('categoria', categoria);
+    }
+    if (cantidad) {
+      params.append('cantidad', cantidad);
+    }
+    if (filtro) {
+      params.append('filtro', filtro);
     }
 
-    // Agregar el parámetro de cantidad si está definido
-    if (cantidad) {
-      url += `&cantidad=${cantidad}`;
-    }
+    url += params.toString();
 
     const response = await fetch(url);
     
     if (!response.ok) {
-        throw new Error(`Error en la solicitud: ${response.status}`);
+      throw new Error(`Error en la solicitud: ${response.status}`);
     }
 
-    const data = await response.json();  // Parsear los datos a JSON
-    return data["recipes"];
+    const data = await response.json();
+    return data.recipes;
   } catch (error) {
     console.error("Error obteniendo las recetas:", error);
-    return null;  // Puedes retornar un valor por defecto o manejar el error según sea necesario
+    throw error;
+  }
+};
+
+export const createRecipe = async (formData) => {
+  try {
+    console.log(formData)
+    const response = await fetch("http://localhost:8000/api/recetas/create/", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      const errorMessage =
+        errorData && errorData.error
+          ? errorData.error
+          : `Error desconocido (${response.status})`;
+
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error creando la receta:", error.message);
+    throw error;
+  }
+};
+
+
+export const submitRating = async (recipeId, calificacion) => {
+  try {
+    const response = await fetch(`http://localhost:8000/api/recetas/${recipeId}/rating/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ calificacion })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error al calificar la receta: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error enviando calificación:", error);
+    throw error;
   }
 };

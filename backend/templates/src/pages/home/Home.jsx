@@ -4,6 +4,7 @@ import Recipes from "../common/Recipes";
 import Footer from "../common/Footer";
 import AboutUs from "./components/AboutUs";
 import Subscriptions from "./components/SubsSection";
+import ButtonCategories from "./components/ButtonCategories";
 
 function Home() {
   const [darkMode, setDarkMode] = useState(false);
@@ -26,11 +27,7 @@ function Home() {
           darkMode ? "bg-gray-900 text-white" : "bg-slate-200 text-gray-900"
         } transition-colors duration-300`}
       >
-        {/* Hero Section */}
-        <section
-          className="pt-24 p-6 md:flex items-center gap-8 max-w-7xl mx-auto"
-          id="home"
-        >
+        <section id="home" className="pt-24 p-6 md:flex items-center gap-8 max-w-7xl mx-auto">
           <div className="flex-1 mb-6 md:mb-0">
             <img
               src="https://www.themealdb.com/images/media/meals/oe8rg51699014028.jpg"
@@ -59,29 +56,22 @@ function Home() {
           </div>
         </section>
 
-        {/* Recetas Populares */}
+        <section id="categorias" className="mt-12">
+          <ButtonCategories darkMode={darkMode} />
+        </section>
 
         <section id="recetas" className="mt-12 max-w-6xl mx-auto p-5">
           <h2 className="text-3xl font-bold text-left mb-8">
             Recetas más populares
           </h2>
-          <Recipes popular darkMode={darkMode} cantidad={3}/>
+          <Recipes popular darkMode={darkMode} cantidad={3} />
         </section>
 
-        {/* Sobre Nosotros */}
-
-        <section className="mt-12 " id="aboutus">
+        <section id="aboutus" className="mt-12">
           <AboutUs />
         </section>
 
-        {/* Suscripciones Premium */}
-
-        <section
-          id="subs"
-          className={`${
-            darkMode ? "bg-gray-900 text-white" : "bg-slate-200 text-gray-900"
-          } transition-colors duration-300 mt-12 py-12`}
-        >
+        <section id="subs" className="mt-12 py-12">
           <Subscriptions />
         </section>
       </main>

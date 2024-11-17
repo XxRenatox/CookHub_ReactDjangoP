@@ -20,8 +20,8 @@ const options = [
   { text: "Home", icon: HomeIcon },
   { text: "Buscar", icon: MagnifyingGlassIcon },
   { text: "Favoritas", icon: BookmarkIcon },
-  { text: "Técnicas", icon: LightBulbIcon },
   { text: "Tutoriales", icon: PlayIcon },
+  { text: "Técnicas", icon: LightBulbIcon },
   { text: "Crear Receta", icon: PlusCircleIcon },
   { text: "Mis Recetas", icon: BookOpenIcon },
 ];

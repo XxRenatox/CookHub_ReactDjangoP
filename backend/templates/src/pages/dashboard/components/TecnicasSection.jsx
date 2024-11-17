@@ -1,36 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import tecnicasData from "../../../assets/tecnicas_cocina.json";
 
 function TecnicasSection({ darkMode }) {
-  const [tecnicas, setTecnicas] = useState([]);
   const [visibleCount, setVisibleCount] = useState(6);
-  const [hasMore, setHasMore] = useState(true);
-
-  useEffect(() => {
-    const fetchTecnicas = async () => {
-      try {
-        const response = await fetch("/tecnicas_cocina.json");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setTecnicas(data);
-        if (data.length <= visibleCount) {
-          setHasMore(false); // No hay más técnicas para mostrar
-        }
-      } catch (error) {
-        console.error("Error fetching techniques:", error);
-      }
-    };
-
-    fetchTecnicas();
-  }, [visibleCount]);
+  const hasMore = visibleCount < tecnicasData.length;
 
   const handleLoadMore = () => {
-    if (visibleCount >= tecnicas.length) {
-      setHasMore(false);
-      return;
-    }
-    setVisibleCount((prevCount) => prevCount + 6); // Aumentar la cantidad de técnicas visibles
+    setVisibleCount((prevCount) => Math.min(prevCount + 6, tecnicasData.length));
   };
 
   return (
@@ -47,7 +23,7 @@ function TecnicasSection({ darkMode }) {
       </header>
       <section>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tecnicas.slice(0, visibleCount).map((tecnica) => (
+          {tecnicasData.slice(0, visibleCount).map((tecnica) => (
             <div
               key={tecnica.id}
               className={`rounded-2xl border-4 shadow-md p-4 ${

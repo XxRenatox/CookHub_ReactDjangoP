@@ -132,6 +132,9 @@ const Recipe = ({ receta, darkMode, isRecetasPage }) => {
                 />
               </a>
             </div>
+            <div>
+              <p className="text-sm font-bold text-center mt-4">Creada por: {receta.creador_nombre}</p>
+            </div>
         </div>
     </section>
   );

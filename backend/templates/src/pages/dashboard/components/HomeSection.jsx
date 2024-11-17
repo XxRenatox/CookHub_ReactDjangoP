@@ -13,7 +13,7 @@ function HomeSection({ darkMode }) {
           <h1 className="font-extrabold text-4xl">Recomendado Para Ti</h1>
         </header>
         <div className="mt-12 max-w-7xl mx-auto p-5">
-            <Recipes darkMode={darkMode} categoria={"Lamb"} cantidad={3}/>
+            <Recipes darkMode={darkMode} categoria={"Miscellaneous"} cantidad={50}/>
         </div>
       </section>
 

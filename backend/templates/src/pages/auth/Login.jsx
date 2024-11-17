@@ -3,7 +3,6 @@ import { FacebookIcon, GoogleIcon } from '../common/Icons';
 import { useNavigate } from 'react-router-dom';
 import { handleSubmit } from '../../controllers/auth/loginController';
 
-const backgroundImage = '../../assets/images/backgroundLogin.jpg'
 
 function Login() {
   const [isLogin, setIsLogin] = useState(true);
