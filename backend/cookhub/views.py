@@ -1,8 +1,11 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from backend.settings import SUPABASE_KEY, SUPABASE_URL
+from backend.settings import SUPABASE_KEY, SUPABASE_URL, SECRET_KEY, JWT_EXPIRATION_SECONDS
 from supabase import create_client, Client
+from django.utils import timezone
+from datetime import datetime, timedelta
+import jwt
 import json
 import bcrypt
 
@@ -81,6 +84,7 @@ def submit_rating(request, recipe_id):
     return JsonResponse({'message': 'Método no permitido'}, status=405)
 
 # Iniciar sesión
+
 @csrf_exempt
 def login_user(request):
     if request.method == "POST":
@@ -92,7 +96,7 @@ def login_user(request):
             if not email or not passwd:
                 return JsonResponse({'error': 'Faltan campos obligatorios'}, status=400)
 
-            usuario = supabase.table("usuarios").select("correo_electronico, contrasena").eq("correo_electronico", email).execute()
+            usuario = supabase.table("usuarios").select("id, correo_electronico, contrasena, nombre, es_premium").eq("correo_electronico", email).execute()
             if not usuario.data:
                 return JsonResponse({'error': 'Credenciales incorrectas'}, status=401)
 
@@ -100,7 +104,17 @@ def login_user(request):
             if not bcrypt.checkpw(passwd.encode('utf-8'), user["contrasena"].encode('utf-8')):
                 return JsonResponse({'error': 'Credenciales incorrectas'}, status=401)
 
-            return JsonResponse({'message': 'Inicio de sesión exitoso'}, status=200)
+            # Generar el token JWT
+            payload = {
+                "user_id": user["id"],
+                "nombre": user["nombre"],
+                "correo_electronico": user["correo_electronico"],
+                "premium": user["es_premium"],
+                "exp": datetime.utcnow() + timedelta(seconds=JWT_EXPIRATION_SECONDS),
+            }
+            token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+
+            return JsonResponse({'token': token, 'message': 'Inicio de sesión exitoso'}, status=200)
 
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Formato de datos inválido'}, status=400)
@@ -109,7 +123,7 @@ def login_user(request):
             return JsonResponse({'error': 'Error interno del servidor'}, status=500)
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 
-# Registrar usuario
+
 @csrf_exempt
 def register_user(request):
     if request.method == 'POST':
@@ -122,14 +136,34 @@ def register_user(request):
             if not email or not passwd or not username:
                 return JsonResponse({'error': 'Faltan campos obligatorios'}, status=400)
 
+            # Verificar si el correo ya existe
             existing_user = supabase.table("usuarios").select("*").eq("correo_electronico", email).execute()
             if existing_user.data:
                 return JsonResponse({'error': 'Este correo ya está registrado'}, status=409)
 
+            # Crear el nuevo usuario
             hashed_password = bcrypt.hashpw(passwd.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            new_user = supabase.table("usuarios").insert({
+                "nombre": username,
+                "correo_electronico": email,
+                "contrasena": hashed_password,
+                "fecha_creacion": timezone.now().strftime("%Y-%m-%d")
+            }).execute()
 
-            supabase.table("usuarios").insert({"nombre": username, "correo_electronico": email, "contrasena": hashed_password}).execute()
-            return JsonResponse({'message': 'Usuario creado con éxito'}, status=201)
+            if not new_user.data:
+                return JsonResponse({'error': 'Error al crear el usuario'}, status=500)
+
+            # Generar el token JWT
+            user_id = new_user.data[0]['id']
+            payload = {
+                "user_id": user_id,
+                "correo_electronico": email,
+                "nombre":username,
+                "exp": datetime.utcnow() + timedelta(seconds=JWT_EXPIRATION_SECONDS),
+            }
+            token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+
+            return JsonResponse({'message': 'Usuario creado con éxito', 'token': token}, status=201)
 
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Formato de datos inválido'}, status=400)
@@ -137,6 +171,8 @@ def register_user(request):
             print(e)
             return JsonResponse({'error': 'Error interno del servidor'}, status=500)
     return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+
 @csrf_exempt
 def create_recipe(request):
     if request.method != "POST":
@@ -151,6 +187,7 @@ def create_recipe(request):
         area = request.POST.get("area")
         dificultad = request.POST.get("dificultad")
         nombre_usuario = request.POST.get("usuario")
+        user_id = request.POST.get("id")
         image_file = request.FILES.get("imagen")
 
         # Validar campos obligatorios
@@ -195,12 +232,14 @@ def create_recipe(request):
             "ingredientes": ingredientes_parsed,  # Aquí usamos los ingredientes procesados
             "calificacion": 0,
             "nivel_dificultad": dificultad,
-            "usuario_id":"85431928-ad97-41e0-91b5-c60d8feda529",
+            "usuario_id":str(user_id),
             "creador_nombre": nombre_usuario
         }
 
         # Insertar la receta en la tabla 'recetas'
         response = supabase.table('recetas').insert([receta_data]).execute()
+        
+        supabase.table('recetas_usuarios').insert({"receta_id":response.data[0]['id'], "usuario_id": user_id}).execute()
 
         return JsonResponse({'message': 'Receta creada con éxito'}, status=201)
 

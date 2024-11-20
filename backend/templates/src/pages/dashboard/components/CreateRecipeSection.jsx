@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { createRecipe } from "../../../controllers/panel/recipeService";
+import { jwtDecode } from "jwt-decode";
+
+const userinfo = jwtDecode(localStorage.getItem("token"));
 
 // Categorias de recetas
 const categorias = [
@@ -28,7 +31,8 @@ const initialState = {
   categoria: "",
   area: "",
   dificultad: "",
-  usuario: "",
+  id: userinfo.user_id,
+  usuario: userinfo.nombre
 };
 
 const parseIngredients = (ingredientsText) => {
@@ -39,14 +43,12 @@ const parseIngredients = (ingredientsText) => {
   
   lines.forEach(line => {
     // Dividir cada línea por espacio (en caso de que los ingredientes y las medidas estén separados por un espacio)
-    const [ingrediente, medida] = line.trim().split(' ');
+    const [ingrediente, medida] = line.trim().split(' ',2);
 
     if (ingrediente && medida) {
       ingredients.push({ ingrediente, medida });
     }
   });
-
-  console.log(ingredients)
   return ingredients;
 };
 
@@ -92,10 +94,12 @@ function CreateRecipeSection({ darkMode }) {
       
       // Enviar los ingredientes como una cadena JSON válida (sin caracteres extra)
       data.append('ingredientes', JSON.stringify(ingredientesParsed));
+      data.append('id', userinfo.user_id)
+      data.append('usuario', userinfo.nombre)
 
       // Agregar el resto de los campos al FormData
       Object.keys(formData).forEach((key) => {
-        if (key !== 'ingredientes') {
+        if (key !== 'ingredientes' && key !== 'id' && key !== 'usuario') {
           data.append(key, formData[key]);
         }
       });
@@ -123,6 +127,7 @@ function CreateRecipeSection({ darkMode }) {
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
               {error}
+              {console.log(formData)}
             </div>
           )}
           {success && (
@@ -224,17 +229,6 @@ function CreateRecipeSection({ darkMode }) {
                 <option value="Intermedio">Medio</option>
                 <option value="Difícil">Difícil</option>
               </select>
-            </div>
-            <div>
-              <label className="block font-semibold mb-1">Nombre de Usuario</label>
-              <input
-                type="text"
-                name="usuario"
-                value={formData.usuario}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded"
-                required
-              />
             </div>
 
             <button

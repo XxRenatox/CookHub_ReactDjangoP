@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import Footer from "../common/Footer";
 import Sidebar from "./components/Sidebar";
 import RecetasSection from "./components/RecetasSection";
-import PerfilSection from "./components/HomeSection";
 import FavoritasSection from "./components/FavoritasSection";
 import VideosSection from "./components/VideosSection";
 import TecnicasSection from "./components/TecnicasSection";
 import HomeSection from "./components/HomeSection";
+import SettingsSection from "./components/SettingsSection";
 import CreateRecipeSection from "./components/CreateRecipeSection";
 
 const Dashboard = () => {
@@ -27,6 +27,8 @@ const Dashboard = () => {
         return <VideosSection darkMode={darkMode} />
       case "Crear Receta":
         return <CreateRecipeSection darkMode={darkMode} />
+      case "Opciones":
+        return <SettingsSection darkMode={darkMode} />
       default:
         return <p>Selecciona una sección</p>;
     }

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -15,74 +16,82 @@ import {
 } from "@heroicons/react/24/outline";
 import { Disclosure } from "@headlessui/react";
 import DarkModeButton from "../../common/ThemeSwitcher";
+import { jwtDecode } from "jwt-decode";
 
 const options = [
   { text: "Home", icon: HomeIcon },
   { text: "Buscar", icon: MagnifyingGlassIcon },
   { text: "Favoritas", icon: BookmarkIcon },
   { text: "Tutoriales", icon: PlayIcon },
+];
+
+const premiumOptions = [
   { text: "Técnicas", icon: LightBulbIcon },
   { text: "Crear Receta", icon: PlusCircleIcon },
   { text: "Mis Recetas", icon: BookOpenIcon },
 ];
 
+const userinfo = jwtDecode(localStorage.getItem("token"));
+
+const closeSession = () => {
+  localStorage.removeItem("token");
+};
+
 function Sidebar({ setActiveSection, darkMode, setDarkMode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const renderOptions = (optionsList) => (
+    <>
+      {optionsList.map((item, index) => (
+        <button
+          key={index}
+          onClick={() => setActiveSection(item.text)}
+          className="text-white hover:bg-[#c5b9a2] group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full text-left"
+        >
+          <item.icon className="mr-3 h-6 w-6" aria-hidden="true" />
+          {item.text}
+        </button>
+      ))}
+    </>
+  );
+
   return (
-    <div className="flex md:h-min-screen">
+    <div className="flex h-min-screen">
       {/* Sidebar for large screens */}
       <div className="hidden md:flex md:w-64 md:flex-shrink-0">
         <div
           className={`flex flex-col justify-between w-full h-full ${
-            darkMode ? "bg-slate-700" : "bg-gray-900"
+            darkMode ? "bg-gray-900" : "bg-slate-700"
           }`}
         >
           <div className="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto">
+            <Link to="/">
+              <h1 className="text-2xl font-extrabold text-white py-5 px-2">
+                CookHub
+              </h1>
+            </Link>
+            <hr className="my-4" />
             <nav className="flex-1 px-2 space-y-1">
-              <Link to="/">
-                <h1 className="text-2xl font-extrabold text-white py-5 px-2">
-                  CookHub
-                </h1>
-              </Link>
-              <hr className="me-8 py-6" />
-              <div className="space-y-6">
-                {options.map((item, index) => (
-                  <a
-                    key={index}
-                    onClick={() => setActiveSection(item.text)}
-                    className="text-white hover:bg-[#c5b9a2] group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-                    role="button"
-                    aria-label={item.text}
-                  >
-                    {<item.icon className="mr-3 h-6 w-6" aria-hidden="true" />}
-                    {item.text}
-                  </a>
-                ))}
-                <DarkModeButton darkMode={darkMode} setDarkMode={setDarkMode} />
-              </div>
+              {renderOptions(options)}
+              {userinfo.premium && renderOptions(premiumOptions)}
+              <DarkModeButton darkMode={darkMode} setDarkMode={setDarkMode} />
             </nav>
           </div>
-          {/* Settings and Log out buttons at the bottom */}
           <div className="space-y-2 pb-4 px-2">
-            <a
-              onClick={() => setActiveSection("Settings")}
-              className="text-white hover:bg-[#019863] group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-              role="button"
-              aria-label="Settings"
+            <button
+              onClick={() => setActiveSection("Opciones")}
+              className="text-white hover:bg-[#019863] group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full text-left"
             >
               <CogIcon className="mr-3 h-6 w-6" aria-hidden="true" />
               Opciones
-            </a>
-            <a
-              onClick={() => setActiveSection("Log out")}
-              className="text-white hover:bg-[#980101] group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-              role="button"
-              aria-label="Log out"
+            </button>
+            <Link to="/"
+              onClick={() => closeSession()}
+              className="text-white hover:bg-[#980101] group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full text-left"
             >
               <ArrowLeftOnRectangleIcon className="mr-3 h-6 w-6" aria-hidden="true" />
               Cerrar Sesión
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -93,15 +102,13 @@ function Sidebar({ setActiveSection, darkMode, setDarkMode }) {
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white p-2"
-            aria-label="Open or close menu"
+            aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (
               <XMarkIcon className="h-10 w-10 text-white" aria-hidden="true" />
             ) : (
               <Bars3Icon
-                className={`h-10 w-10 ${
-                  darkMode ? "text-white" : "text-black"
-                }`}
+                className={`h-10 w-10 ${darkMode ? "text-white" : "text-black"}`}
                 aria-hidden="true"
               />
             )}
@@ -121,49 +128,32 @@ function Sidebar({ setActiveSection, darkMode, setDarkMode }) {
         } md:hidden`}
       >
         <div className="flex flex-col h-full justify-between">
+          <Link to="/">
+            <h1 className="text-2xl font-extrabold text-white pb-12 px-2">
+              CookHub
+            </h1>
+          </Link>
+          <hr className="my-5" />
           <nav className="space-y-1 z-40">
-            <Link to="/">
-              <h1 className="text-2xl font-extrabold text-white pb-12 px-2">
-                CookHub
-              </h1>
-            </Link>
-            <hr className="my-5" />
-            <div className="space-y-8">
-              {options.map((item, index) => (
-                <a
-                  key={index}
-                  onClick={() => setActiveSection(item.text)}
-                  className="text-white hover:bg-gray-700 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-                  role="button"
-                  aria-label={item.text}
-                >
-                  {<item.icon className="mr-3 h-6 w-6" aria-hidden="true" />}
-                  {item.text}
-                </a>
-              ))}
-              <DarkModeButton darkMode={darkMode} setDarkMode={setDarkMode} />
-            </div>
+            {renderOptions(options)}
+            {userinfo.premium && renderOptions(premiumOptions)}
+            <DarkModeButton darkMode={darkMode} setDarkMode={setDarkMode} />
           </nav>
-          {/* Settings and Log out buttons at the bottom of mobile sidebar */}
           <div className="space-y-2 pb-4 px-2">
-            <a
-              onClick={() => setActiveSection("Settings")}
-              className="text-white hover:bg-gray-700 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-              role="button"
-              aria-label="Settings"
+            <button
+              onClick={() => setActiveSection("Opciones")}
+              className="text-white hover:bg-gray-700 group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full text-left"
             >
               <CogIcon className="mr-3 h-6 w-6" aria-hidden="true" />
-              Settings
-            </a>
-            <a
-              onClick={() => setActiveSection("Log out")}
-              className="text-white hover:bg-gray-700 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-              role="button"
-              aria-label="Log out"
+              Opciones
+            </button>
+            <Link to="/"
+              onClick={() => closeSession()}
+              className="text-white hover:bg-[#980101] group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full text-left"
             >
               <ArrowLeftOnRectangleIcon className="mr-3 h-6 w-6" aria-hidden="true" />
-              Log out
-            </a>
+              Cerrar Sesión
+            </Link>
           </div>
         </div>
       </Disclosure>

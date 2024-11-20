@@ -7,6 +7,8 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2Y21tdGxjbWdiaG93cWxxZ2V6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE4MDQwMjIsImV4cCI6MjA0NzM4MDAyMn0.ehR_UAZyQvIk5H2Xu7K8g59Y007XhnWZHc5toKHy2dc'
 SUPABASE_URL = 'https://uvcmmtlcmgbhowqlqgez.supabase.co'
 
+
+JWT_EXPIRATION_SECONDS = 3600 
 SECRET_KEY = 'django-insecure-oa)#0lzuh@f%liveq$y_i+g7a2)4uiwc$k-+mny4g75+k)d36('
 
 DEBUG = True

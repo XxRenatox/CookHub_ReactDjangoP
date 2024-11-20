@@ -45,11 +45,19 @@ const iniciarSesion = async (correo_electronico, contrasena) => {
   });
 
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Error al iniciar sesión");
+    const errorData = await response.json(); // Leer el cuerpo una vez
+    throw new Error(errorData.error || "Error al iniciar sesión");
   }
-  console.log(response.json())
-  return await response.json();
+
+  const data = await response.json(); // Leer el cuerpo una vez
+  const token = data.token;
+
+  if (token) {
+    localStorage.setItem("token", token);
+    return token;
+  } else {
+    throw new Error("No se recibió token de autenticación");
+  }
 };
 
 const registrarUsuario = async (nombre, correo_electronico, contrasena) => {
@@ -62,12 +70,13 @@ const registrarUsuario = async (nombre, correo_electronico, contrasena) => {
   });
 
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Error al registrar usuario");
+    const errorData = await response.json(); // Leer el cuerpo una vez
+    throw new Error(errorData.error || "Error al registrar usuario intentelo mas tarde");
   }
 
-  return await response.json();
+  return await response.json(); // Leer y retornar el cuerpo una vez
 };
+
 
 export const handleSubmit = async (e, navigate, type) => {
   e.preventDefault();
