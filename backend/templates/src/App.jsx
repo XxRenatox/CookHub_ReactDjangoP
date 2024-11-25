@@ -7,6 +7,7 @@ import Subscriptions from './pages/subs/Subs';
 import Faq from './pages/faq/FAQ';
 import CategoriePage from './pages/categories/CategoriesPage';
 import NotFound from './pages/errorPage';
+import FormularioSuscripcion from './pages/subs/FormularioSubcripcion';
 
 function App () {
   return (
@@ -18,6 +19,7 @@ function App () {
         <Route path="/Subs" element={<Subscriptions />} />
         <Route path="/Faq" element={<Faq />} />    
         <Route path='/category/:categoryName'element={<CategoriePage/>} />
+        <Route path='/FormularioSubscripcion' element={<FormularioSuscripcion />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

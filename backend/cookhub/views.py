@@ -246,3 +246,68 @@ def create_recipe(request):
     except Exception as e:
         print(f"Error interno: {e}")
         return JsonResponse({'error': 'Error interno del servidor'}, status=500)
+
+@csrf_exempt
+def subscribe(request):
+    if request.method != "POST":
+        return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+    try:
+        # Leer datos del formulario
+        data = json.loads(request.body)
+        
+        # Validación de campos
+        required_fields = [
+            "nombre", "correo", "direccion", "ciudad", "estado",
+            "codigoPostal", "pais", "metodoPago", "numeroTarjeta",
+            "fechaVencimiento", "cvv"
+        ]
+        for field in required_fields:
+            if not data.get(field):
+                return JsonResponse({"message": f"El campo {field} es obligatorio."}, status=400)
+        
+        # Validar número de tarjeta
+        if len(data["numeroTarjeta"]) != 16 or not data["numeroTarjeta"].isdigit():
+            return JsonResponse({"message": "Número de tarjeta no válido (16 dígitos requeridos)."}, status=400)
+        
+        # Validar fecha de vencimiento
+        try:
+            month, year = map(int, data["fechaVencimiento"].split("/"))
+            if month < 1 or month > 12:
+                return JsonResponse({"message": "Mes de vencimiento no válido."}, status=400)
+        except ValueError:
+            return JsonResponse({"message": "Formato de fecha de vencimiento no válido (MM/YY requerido)."}, status=400)
+
+        # Encriptar la información de la tarjeta
+        data["numeroTarjeta"] = bcrypt.hashpw(data["numeroTarjeta"].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        data["cvv"] = bcrypt.hashpw(data["cvv"].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+        # Preparar los datos para insertar
+        suscripcion_data = {
+            "nombre": data["nombre"],
+            "correo": data["correo"],
+            "direccion": data["direccion"],
+            "ciudad": data["ciudad"],
+            "estado": data["estado"],
+            "codigopostal": data["codigoPostal"],
+            "pais": data["pais"],
+            "metodopago": data["metodoPago"],
+            "numerotarjeta": data["numeroTarjeta"],
+            "fechavencimiento": data["fechaVencimiento"],
+            "cvv": data["cvv"],
+            "id_usuario": data["id_usuario"],
+            "fecha_inicio": datetime.now().strftime("%Y-%m-%d"),
+            "fecha_expiracion": (datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d")
+        }
+
+        # Insertar la suscripción en la tabla 'subscripciones'
+        response = supabase.table('subscripciones').insert([suscripcion_data]).execute()
+        
+        # Actualizar el campo es_premium del usuario
+        supabase.table("usuarios").update({"es_premium": True}).eq("id", data["id_usuario"]).execute()
+        
+        return JsonResponse({'message': 'Suscripción realizada con éxito'}, status=201)
+
+    except Exception as e:
+        print(f"Error interno: {e}")
+        return JsonResponse({'error': 'Error interno del servidor'}, status=500)

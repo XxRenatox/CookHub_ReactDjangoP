@@ -18,7 +18,7 @@ const tiers = [
   {
     name: 'Plan Premium',
     id: 'tier-premium',
-    href: '#',
+    href: '/FormularioSubscripcion',
     priceMonthly: '$99',
     description: 'Para los apasionados, incluye soporte 24/7 y más.',
     features: [
