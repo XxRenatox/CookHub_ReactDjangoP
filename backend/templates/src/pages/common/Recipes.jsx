@@ -4,6 +4,7 @@ import Recipe from "./RecipeComponent";
 
 export const Recipes = ({
   categoria,
+  userinfo,
   darkMode,
   showFavoriteOption,
   popular,
@@ -105,6 +106,7 @@ export const Recipes = ({
               darkMode={darkMode}
               showFavoriteOption={showFavoriteOption}
               searchPage={searchPage}
+              userinfo={userinfo}
             />
           ))}
         </div>

@@ -1,17 +1,3 @@
-CREATE TABLE categorias (
-    id SERIAL PRIMARY KEY,
-    nombre VARCHAR(255) NOT NULL UNIQUE
-);
-
-CREATE TABLE areas (
-    id SERIAL PRIMARY KEY,
-    nombre VARCHAR(255) NOT NULL UNIQUE
-);
-
-CREATE TABLE niveles_dificultad (
-    id SERIAL PRIMARY KEY,
-    nombre VARCHAR(255) NOT NULL UNIQUE
-);
 
 CREATE TABLE productos (
     id SERIAL PRIMARY KEY,
@@ -51,14 +37,9 @@ CREATE TABLE recetas_usuarios (
     PRIMARY KEY (receta_id, usuario_id)
 );
 
-CREATE TABLE recetas_productos (
-    receta_id UUID NOT NULL REFERENCES recetas(id),
-    producto_id INTEGER NOT NULL REFERENCES productos(id),
-    PRIMARY KEY (receta_id, producto_id)
-);
-
-CREATE TABLE usuario_productos (
-    usuario_id UUID NOT NULL REFERENCES usuarios(id),
-    producto_id INTEGER NOT NULL REFERENCES productos(id),
-    PRIMARY KEY (usuario_id, producto_id)
+CREATE TABLE recetas_favoritas (
+    id SERIAL PRIMARY KEY,                  -- ID único para cada entrada (opcional, puedes omitirlo si no es necesario)
+    usuario_id UUID NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE, -- Usuario que tiene la receta favorita
+    receta_id UUID NOT NULL REFERENCES recetas(id) ON DELETE CASCADE,   -- Receta marcada como favorita
+    fecha_agregado TIMESTAMP DEFAULT CURRENT_TIMESTAMP                  -- Fecha en que se agregó a favoritos
 );

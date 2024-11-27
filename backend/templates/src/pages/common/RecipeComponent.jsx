@@ -4,7 +4,7 @@ import { BookmarkIcon, BookOpenIcon } from "@heroicons/react/24/outline";
 import ButtonFav from "./ButtonFav";
 import RatingStars from "./ratingStars";
 
-const Recipe = ({ receta, darkMode, searchPage }) => {
+const Recipe = ({ receta, darkMode, searchPage, userinfo }) => {
   const [isIngredientesOpen, setIngredientesOpen] = useState(false);
   const [isInstruccionesOpen, setInstruccionesOpen] = useState(false);
 
@@ -46,7 +46,7 @@ const Recipe = ({ receta, darkMode, searchPage }) => {
         <div>
           {searchPage && (
             <div className="flex flex-col md:flex-row md:justify-between md:items-center space-y-2 md:space-y-0 md:space-x-1">
-              <ButtonFav />
+              <ButtonFav recipeId={receta.id} userId={userinfo} />
               <RatingStars recipeId={receta.id} />
             </div>
           )}

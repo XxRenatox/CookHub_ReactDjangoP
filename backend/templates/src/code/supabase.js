@@ -5,23 +5,10 @@ const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-
 const categorias = [
-    "Lamb",
-    "Miscellaneous",
-    "Pasta",
-    "Pork",
-    "Side",
-    "Seafood",
-    "Starter",
-    "Vegan",
-    "Vegetarian",
-    "Beef",
-    "Breakfast",
-    "Chicken",
-    "Dessert",
-    "Goat"
-]
+    "Lamb", "Miscellaneous", "Pasta", "Pork", "Side", "Seafood", "Starter",
+    "Vegan", "Vegetarian", "Beef", "Breakfast", "Chicken", "Dessert", "Goat"
+];
 
 const areas = [
     { español: "Americana", inglés: "American" },
@@ -94,7 +81,6 @@ const areas = [
     { español: "Pakistán", inglés: "Pakistani" }
 ];
 
-
 const dificultad = ["Fácil", "Medio", "Difícil"];
 
 const fetchCategoryRecipes = async (categoria) => {
@@ -102,7 +88,7 @@ const fetchCategoryRecipes = async (categoria) => {
         const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${categoria}`);
         const data = await response.json();
 
-        console.log(`Buscando Recetas de la Categoria: ${categoria}`)
+        console.log(`Buscando Recetas de la Categoria: ${categoria}`);
 
         for (const element of data.meals) {
             const detailResponse = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${element.idMeal}`);
@@ -121,6 +107,10 @@ const fetchCategoryRecipes = async (categoria) => {
                     }
                 }
 
+                // Obtener la nacionalidad en inglés
+                const area = areas.find(a => a.español === recipe.strArea);
+                const nacionalidad = area ? area.inglés : recipe.strArea;
+
                 const { data, error } = await supabase
                     .from('recetas')
                     .insert([
@@ -129,11 +119,11 @@ const fetchCategoryRecipes = async (categoria) => {
                             imagen: recipe.strMealThumb,
                             instrucciones: recipe.strInstructions,
                             categoria: recipe.strCategory,
-                            area: recipe.strArea,
+                            nacionalidad: nacionalidad,  // Aquí asignamos la nacionalidad traducida
                             youtube_link: recipe.strYoutube,
                             ingredientes: ingredientes,
                             calificacion: 0,
-                            usuario_id: "85431928-ad97-41e0-91b5-c60d8feda529",
+                            usuario_id: "64e280ce-ff58-4cd1-938a-cdccbf35caae",
                             creador_nombre: "Sistema",
                             nivel_dificultad: rDificultad
                         }
@@ -149,7 +139,7 @@ const fetchCategoryRecipes = async (categoria) => {
     } catch (error) {
         console.error("Error fetching data:", error);
     }
-}
+};
 
 const fetchProducts = async () => {
     try {
@@ -184,11 +174,13 @@ const fetchProducts = async () => {
     } catch (error) {
         console.error("Error al obtener los datos:", error);
     }
-}
+};
 
 const getData = async (categorias) => {
     for (const categoria of categorias) {
         await fetchCategoryRecipes(categoria);
         console.log(`Finished processing category: ${categoria}`);
     }
-}
+};
+
+getData(categorias)

@@ -15,6 +15,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Disclosure } from "@headlessui/react";
 import DarkModeButton from "../../common/ThemeSwitcher";
+import { UserCircleIcon } from "@heroicons/react/20/solid";
 
 const options = [
   { text: "Home", icon: HomeIcon },
@@ -28,6 +29,10 @@ const premiumOptions = [
   { text: "Crear Receta", icon: PlusCircleIcon },
   { text: "Mis Recetas", icon: BookOpenIcon },
 ];
+
+const adminOptions = [
+  {text: "Panel de Administrador", icon: UserCircleIcon}
+]
 
 
 
@@ -71,7 +76,8 @@ function Sidebar({ setActiveSection, darkMode, setDarkMode, userinfo }) {
             <hr className="my-4" />
             <nav className="flex-1 px-2 space-y-3">
               {renderOptions(options)}
-              {userinfo && userinfo.premium && renderOptions(premiumOptions)}
+              {userinfo && (userinfo.premium || userinfo.admin) && renderOptions(premiumOptions)}
+              {userinfo && userinfo.admin && renderOptions(adminOptions)}
               <DarkModeButton darkMode={darkMode} setDarkMode={setDarkMode} />
             </nav>
           </div>
@@ -141,6 +147,7 @@ function Sidebar({ setActiveSection, darkMode, setDarkMode, userinfo }) {
           <nav className="space-y-1 z-40">
             {renderOptions(options)}
             {userinfo && (userinfo.premium || userinfo.admin) && renderOptions(premiumOptions)}
+            {userinfo && userinfo.admin && renderOptions(adminOptions)}
             <DarkModeButton darkMode={darkMode} setDarkMode={setDarkMode} />
           </nav>
           <div className="space-y-2 pb-4 px-2">

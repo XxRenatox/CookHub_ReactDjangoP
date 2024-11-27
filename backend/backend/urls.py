@@ -14,6 +14,7 @@ urlpatterns = [
     path('api/recetas/', views.get_recipes, name='get_recipes'),
     path('api/recetas/<uuid:recipe_id>/calificacion/', views.submit_rating, name='submit_rating'),
     path('api/recetas/create/', views.create_recipe, name='create_recipe'),
+    path('api/recetas/setfav/<uuid:user_id>/<uuid:recipe_id>/', views.set_fav, name='set_fav'),
 
     # Authentication
     path('api/login/', views.login_user, name="login_user"),
@@ -21,6 +22,10 @@ urlpatterns = [
     
     # User
     path('api/user/addpreference/<uuid:user_id>/', views.add_preference, name='add_preference'),
+    
+    #Admin
+    
+    path('api/admin/getdata', views.get_datausers_datasubs, name='get_datausers'),
     
     # Subscriptions
     

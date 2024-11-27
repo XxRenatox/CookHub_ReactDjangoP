@@ -13,7 +13,7 @@ function RecetasSection({ darkMode, userinfo }) {
         </p>
       </header>
       <section className="flex flex-col flex-grow justify-center items-center">
-        <Recipes categoria={userinfo && userinfo.preferencia ? userinfo.preferencia : ''} darkMode={darkMode} searchPage />
+        <Recipes categoria={userinfo && userinfo.preferencia ? userinfo.preferencia : ''} darkMode={darkMode} searchPage userinfo={userinfo && userinfo.user_id ? userinfo.user_id : ''}/>
       </section>
     </main>
   );

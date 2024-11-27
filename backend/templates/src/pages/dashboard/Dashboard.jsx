@@ -9,6 +9,7 @@ import HomeSection from "./components/HomeSection";
 import SettingsSection from "./components/SettingsSection";
 import CreateRecipeSection from "./components/premium/CreateRecipeSection";
 import { jwtDecode } from "jwt-decode";
+import PanelAdmin from "./components/admin/PanelAdmin";
 
 const Dashboard = () => {
   const [activeSection, setActiveSection] = useState("Home");
@@ -44,6 +45,8 @@ const Dashboard = () => {
         return <CreateRecipeSection darkMode={darkMode} userinfo={userinfo}/>
       case "Opciones":
         return <SettingsSection darkMode={darkMode} userinfo={userinfo}/>
+      case "Panel de Administrador":
+        return <PanelAdmin darkMode={darkMode} />
       default:
         return <p>Selecciona una sección</p>;
     }

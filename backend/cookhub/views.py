@@ -336,3 +336,68 @@ def add_preference(request, user_id):
             print(e)
             return JsonResponse({'message': 'Error interno del servidor'}, status=500)
     return JsonResponse({'message': 'Método no permitido'}, status=405)
+
+@csrf_exempt
+def set_fav(request, user_id, recipe_id):
+    if request.method == 'POST':
+        try:
+            # Validar que el usuario existe
+            user = supabase.table("usuarios").select("*").eq("id", user_id).execute()
+            if not user.data:
+                return JsonResponse({'message': 'Usuario no encontrado'}, status=404)
+
+            # Validar que la receta existe
+            recipe = supabase.table("recetas").select("*").eq("id", recipe_id).execute()
+            if not recipe.data:
+                return JsonResponse({'message': 'Receta no encontrada'}, status=404)
+
+            # Evitar duplicados
+            existing_fav = (
+                supabase.table("recetas_favoritas")
+                .select("*")
+                .eq("usuario_id", user_id)
+                .eq("receta_id", recipe_id)
+                .execute()
+            )
+            if existing_fav.data:
+                return JsonResponse({'message': 'La receta ya está en favoritos'}, status=400)
+
+            # Insertar en la tabla
+            supabase.table("recetas_favoritas").insert({"receta_id": recipe_id, "usuario_id": user_id}).execute()
+            return JsonResponse({'message': 'Receta agregada a favoritos', 'status': 'success'}, status=200)
+
+        except Exception as e:
+            print(f"Error interno: {e}")
+            return JsonResponse({'message': 'Error interno del servidor'}, status=500)
+
+    elif request.method == 'GET':
+        try:
+            # Consultar si es favorito
+            favorite = (
+                supabase.table("recetas_favoritas")
+                .select("*")
+                .eq("usuario_id", user_id)
+                .eq("receta_id", recipe_id)
+                .execute()
+            )
+            is_favorite = len(favorite.data) > 0
+            return JsonResponse({'is_favorite': is_favorite}, status=200)
+
+        except Exception as e:
+            print(f"Error interno: {e}")
+            return JsonResponse({'message': 'Error interno del servidor'}, status=500)
+
+    return JsonResponse({'message': 'Método no permitido'}, status=405)
+
+def get_datausers_datasubs(request):
+    try:
+        query = supabase.table("usuarios").select("*").execute()
+        data_users = query.data if query.data else []
+
+        query = supabase.table("subscripciones").select("*").execute()
+        data_subs = query.data if query.data else []
+
+        return JsonResponse({"users": data_users, "subscriptions": data_subs}, status=200)
+    except Exception as e:
+        print(e)
+        return JsonResponse({"error": "Error interno al obtener datos"}, status=500)
