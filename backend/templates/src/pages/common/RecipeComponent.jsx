@@ -4,7 +4,7 @@ import { BookmarkIcon, BookOpenIcon } from "@heroicons/react/24/outline";
 import ButtonFav from "./ButtonFav";
 import RatingStars from "./ratingStars";
 
-const Recipe = ({ receta, darkMode, isRecetasPage }) => {
+const Recipe = ({ receta, darkMode, searchPage }) => {
   const [isIngredientesOpen, setIngredientesOpen] = useState(false);
   const [isInstruccionesOpen, setInstruccionesOpen] = useState(false);
 
@@ -44,7 +44,7 @@ const Recipe = ({ receta, darkMode, isRecetasPage }) => {
         />
         <h5 className="text-xl font-bold mb-5 mt-5">{receta.titulo}</h5>
         <div>
-          {isRecetasPage && (
+          {searchPage && (
             <div className="flex flex-col md:flex-row md:justify-between md:items-center space-y-2 md:space-y-0 md:space-x-1">
               <ButtonFav />
               <RatingStars recipeId={receta.id} />

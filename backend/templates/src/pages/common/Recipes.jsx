@@ -104,6 +104,7 @@ export const Recipes = ({
               receta={receta}
               darkMode={darkMode}
               showFavoriteOption={showFavoriteOption}
+              searchPage={searchPage}
             />
           ))}
         </div>

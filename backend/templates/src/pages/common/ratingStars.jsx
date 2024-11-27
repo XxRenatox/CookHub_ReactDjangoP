@@ -5,7 +5,7 @@ const RatingStars = ({ recipeId }) => {
 
   const handleRatingSubmit = async (newRating) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/recetas/${recipeId}/calificacion`, {
+      const response = await fetch(`http://localhost:8000/api/recetas/${recipeId}/calificacion/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

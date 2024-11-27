@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   XMarkIcon,
@@ -16,7 +15,6 @@ import {
 } from "@heroicons/react/24/outline";
 import { Disclosure } from "@headlessui/react";
 import DarkModeButton from "../../common/ThemeSwitcher";
-import { jwtDecode } from "jwt-decode";
 
 const options = [
   { text: "Home", icon: HomeIcon },
@@ -31,13 +29,13 @@ const premiumOptions = [
   { text: "Mis Recetas", icon: BookOpenIcon },
 ];
 
-const userinfo = jwtDecode(localStorage.getItem("token"));
+
 
 const closeSession = () => {
   localStorage.removeItem("token");
 };
 
-function Sidebar({ setActiveSection, darkMode, setDarkMode }) {
+function Sidebar({ setActiveSection, darkMode, setDarkMode, userinfo }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const renderOptions = (optionsList) => (
@@ -71,9 +69,9 @@ function Sidebar({ setActiveSection, darkMode, setDarkMode }) {
               </h1>
             </Link>
             <hr className="my-4" />
-            <nav className="flex-1 px-2 space-y-1">
+            <nav className="flex-1 px-2 space-y-3">
               {renderOptions(options)}
-              {userinfo.premium && renderOptions(premiumOptions)}
+              {userinfo && userinfo.premium && renderOptions(premiumOptions)}
               <DarkModeButton darkMode={darkMode} setDarkMode={setDarkMode} />
             </nav>
           </div>
@@ -85,11 +83,15 @@ function Sidebar({ setActiveSection, darkMode, setDarkMode }) {
               <CogIcon className="mr-3 h-6 w-6" aria-hidden="true" />
               Opciones
             </button>
-            <Link to="/"
+            <Link
+              to="/"
               onClick={() => closeSession()}
               className="text-white hover:bg-[#980101] group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full text-left"
             >
-              <ArrowLeftOnRectangleIcon className="mr-3 h-6 w-6" aria-hidden="true" />
+              <ArrowLeftOnRectangleIcon
+                className="mr-3 h-6 w-6"
+                aria-hidden="true"
+              />
               Cerrar Sesión
             </Link>
           </div>
@@ -108,7 +110,9 @@ function Sidebar({ setActiveSection, darkMode, setDarkMode }) {
               <XMarkIcon className="h-10 w-10 text-white" aria-hidden="true" />
             ) : (
               <Bars3Icon
-                className={`h-10 w-10 ${darkMode ? "text-white" : "text-black"}`}
+                className={`h-10 w-10 ${
+                  darkMode ? "text-white" : "text-black"
+                }`}
                 aria-hidden="true"
               />
             )}
@@ -136,7 +140,7 @@ function Sidebar({ setActiveSection, darkMode, setDarkMode }) {
           <hr className="my-5" />
           <nav className="space-y-1 z-40">
             {renderOptions(options)}
-            {userinfo.premium && renderOptions(premiumOptions)}
+            {userinfo && (userinfo.premium || userinfo.admin) && renderOptions(premiumOptions)}
             <DarkModeButton darkMode={darkMode} setDarkMode={setDarkMode} />
           </nav>
           <div className="space-y-2 pb-4 px-2">
@@ -147,11 +151,15 @@ function Sidebar({ setActiveSection, darkMode, setDarkMode }) {
               <CogIcon className="mr-3 h-6 w-6" aria-hidden="true" />
               Opciones
             </button>
-            <Link to="/"
+            <Link
+              to="/"
               onClick={() => closeSession()}
               className="text-white hover:bg-[#980101] group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full text-left"
             >
-              <ArrowLeftOnRectangleIcon className="mr-3 h-6 w-6" aria-hidden="true" />
+              <ArrowLeftOnRectangleIcon
+                className="mr-3 h-6 w-6"
+                aria-hidden="true"
+              />
               Cerrar Sesión
             </Link>
           </div>

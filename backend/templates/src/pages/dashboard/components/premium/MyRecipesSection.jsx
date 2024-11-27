@@ -1,6 +1,6 @@
 import React from "react";
 
-function MyRecipesSection() {
+function MyRecipesSection({ darkmode, userinfo}) {
   return (
     <main
       className={`p-6 min-h-screen transition-colors duration-300 ${

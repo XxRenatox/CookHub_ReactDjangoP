@@ -96,7 +96,7 @@ def login_user(request):
             if not email or not passwd:
                 return JsonResponse({'error': 'Faltan campos obligatorios'}, status=400)
 
-            usuario = supabase.table("usuarios").select("id, correo_electronico, contrasena, nombre, es_premium").eq("correo_electronico", email).execute()
+            usuario = supabase.table("usuarios").select("*").eq("correo_electronico", email).execute()
             if not usuario.data:
                 return JsonResponse({'error': 'Credenciales incorrectas'}, status=401)
 
@@ -110,6 +110,8 @@ def login_user(request):
                 "nombre": user["nombre"],
                 "correo_electronico": user["correo_electronico"],
                 "premium": user["es_premium"],
+                "admin": user["es_admin"],
+                "preferencia": user["preferencia"],
                 "exp": datetime.utcnow() + timedelta(seconds=JWT_EXPIRATION_SECONDS),
             }
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
@@ -159,6 +161,9 @@ def register_user(request):
                 "user_id": user_id,
                 "correo_electronico": email,
                 "nombre":username,
+                "premium": new_user.data[0]["es_premium"],
+                "admin": new_user.data[0]["es_admin"],
+                "preferencia": new_user[0]["preferencia"],
                 "exp": datetime.utcnow() + timedelta(seconds=JWT_EXPIRATION_SECONDS),
             }
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
@@ -311,3 +316,23 @@ def subscribe(request):
     except Exception as e:
         print(f"Error interno: {e}")
         return JsonResponse({'error': 'Error interno del servidor'}, status=500)
+    
+@csrf_exempt
+def add_preference(request, user_id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            preference = data.get('preferencia')
+
+            if preference is None:
+                return JsonResponse({'message': 'Preferencia no proporcionada'}, status=400)
+
+            supabase.table("usuarios").update({"preferencia": preference}).eq("id", user_id).execute()
+            return JsonResponse({'message': 'Preferencia actualizada', 'status': 'success'}, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'message': 'Error al procesar los datos'}, status=400)
+        except Exception as e:
+            print(e)
+            return JsonResponse({'message': 'Error interno del servidor'}, status=500)
+    return JsonResponse({'message': 'Método no permitido'}, status=405)

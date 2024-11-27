@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import { createRecipe } from "../../../controllers/panel/recipeService";
-import { jwtDecode } from "jwt-decode";
-
-const userinfo = jwtDecode(localStorage.getItem("token"));
+import { createRecipe } from "../../../../controllers/panel/recipeService";
 
 // Categorias de recetas
 const categorias = [
@@ -31,9 +28,9 @@ const initialState = {
   categoria: "",
   area: "",
   dificultad: "",
-  id: userinfo.user_id,
-  usuario: userinfo.nombre
-};
+  id: "",
+  usuario: "",
+}
 
 const parseIngredients = (ingredientsText) => {
   const ingredients = [];
@@ -52,7 +49,7 @@ const parseIngredients = (ingredientsText) => {
   return ingredients;
 };
 
-function CreateRecipeSection({ darkMode }) {
+function CreateRecipeSection({ darkMode, userinfo }) {
   // Estado del formulario
   const [formData, setFormData] = useState(initialState);
   // Estado de carga

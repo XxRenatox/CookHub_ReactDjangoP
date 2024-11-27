@@ -1,9 +1,9 @@
 import React from "react";
 import Recipes from "../../common/Recipes";
 
-function RecetasSection({ darkMode }) {
+function RecetasSection({ darkMode, userinfo }) {
   return (
-    <main className={`p-6 min-h-screen transition-colors duration-300 ${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-800"}`}>
+    <main className={`p-6 min-h-screen transition-colors duration-300 ${darkMode ? "bg-gray-900 text-white" : "bg-slate-200 text-gray-800"}`}>
       <header className="text-center mb-8">
         <h1 className="font-extrabold text-4xl">
           Sección de Recetas
@@ -13,7 +13,7 @@ function RecetasSection({ darkMode }) {
         </p>
       </header>
       <section className="flex flex-col flex-grow justify-center items-center">
-        <Recipes categoria="Lamb" darkMode={darkMode} isRecetasPage />
+        <Recipes categoria={userinfo && userinfo.preferencia ? userinfo.preferencia : ''} darkMode={darkMode} searchPage />
       </section>
     </main>
   );

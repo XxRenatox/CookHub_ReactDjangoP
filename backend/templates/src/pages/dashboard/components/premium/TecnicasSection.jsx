@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import tecnicasData from "../../../assets/tecnicas_cocina.json";
+import tecnicasData from "../../../../assets/tecnicas_cocina.json";
 
-function TecnicasSection({ darkMode }) {
+function TecnicasSection({ darkMode, userinfo }) {
   const [visibleCount, setVisibleCount] = useState(6);
   const hasMore = visibleCount < tecnicasData.length;
 

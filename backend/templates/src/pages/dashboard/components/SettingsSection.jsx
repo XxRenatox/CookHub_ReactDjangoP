@@ -1,9 +1,24 @@
 import React from "react";
-import { jwtDecode } from "jwt-decode";
+import { Link } from "react-router-dom";
 
-const userinfo = jwtDecode(localStorage.getItem("token"));
+const categorias = [
+  { es: "Cordero", en: "Lamb" },           // Lamb
+  { es: "Misceláneo", en: "Miscellaneous" },        // Miscellaneous
+  { es: "Pasta", en: "Pasta" },             // Pasta
+  { es: "Cerdo", en: "Pork" },             // Pork
+  { es: "Acompañamiento", en: "Side" },    // Side
+  { es: "Mariscos", en: "Seafood" },          // Seafood
+  { es: "Entrante", en: "Starter" },          // Starter
+  { es: "Vegano", en: "Vegan" },            // Vegan
+  { es: "Vegetariano", en: "Vegetarian" },       // Vegetarian
+  { es: "Res", en: "Beef" },               // Beef
+  { es: "Desayuno", en: "Breakfast" },          // Breakfast
+  { es: "Pollo", en: "Chicken" },             // Chicken
+  { es: "Postre", en: "Dessert" },            // Dessert
+  { es: "Cabra", en: "Goat" }              // Goat
+];
 
-function SettingsSection({ darkMode }) {
+function SettingsSection({ darkMode, userinfo }) {
   return (
     <main
       className={`p-6 min-h-screen transition-colors duration-300 ${
@@ -26,16 +41,23 @@ function SettingsSection({ darkMode }) {
           <ul className="space-y-3 text-gray-700 dark:text-gray-300">
             <li>
               <span className="font-semibold">Nombre de Usuario:</span>{" "}
-              {userinfo.nombre}
+              {userinfo && userinfo.nombre ? userinfo.nombre : "No disponible"}
             </li>
             <li>
               <span className="font-semibold">Correo Electrónico:</span>{" "}
-              {userinfo.correo_electronico}
+              {userinfo && userinfo.correo_electronico
+                ? userinfo.correo_electronico
+                : "No disponible"}
             </li>
+              <li>
+                <span className="font-semibold">Preferencia Alimenticia:</span>{" "}
+                {userinfo && userinfo.preferencia
+                  ? categorias.find(categoria => categoria.en === userinfo.preferencia)?.es
+                  : "No disponible"}
+              </li>
             <li>
               <span className="font-semibold">Premium:</span>{" "}
-              {userinfo.premium ? "Sí" : "No"}
-              {console.log(userinfo)}
+              {userinfo && userinfo.premium ? "Sí" : "No"}
             </li>
           </ul>
         </div>
@@ -53,7 +75,9 @@ function SettingsSection({ darkMode }) {
             </li>
             <li>
               <button className="bg-[#019863] text-white w-64 py-2 rounded-lg hover:bg-[#019833d8] focus:outline-none">
-                Hacerse premium
+                <Link to='/FormularioSubscripcion'>
+                  Hacerse premium
+                </Link>
               </button>
             </li>
             <li>
@@ -65,28 +89,6 @@ function SettingsSection({ darkMode }) {
               <button className="bg-red-600 text-white w-64 py-2 rounded-lg hover:bg-red-700 focus:outline-none">
                 Eliminar cuenta
               </button>
-            </li>
-          </ul>
-        </div>
-
-        {/* Tarjeta de personalización */}
-        <div className="bg-gray-100 dark:bg-gray-700 p-5 rounded-lg shadow-md">
-          <h2 className="font-bold text-xl mb-4 dark:text-white">
-            Personalización
-          </h2>
-          <ul className="space-y-3 text-gray-700 dark:text-gray-300">
-            <li>
-              <label className="flex items-center space-x-3">
-                <span>Modo oscuro</span>
-                <input
-                  type="checkbox"
-                  checked={darkMode}
-                  onChange={() => {
-                    console.log("Modo oscuro cambiado");
-                  }}
-                  className="form-checkbox h-5 w-5 text-indigo-600 dark:text-indigo-400"
-                />
-              </label>
             </li>
           </ul>
         </div>

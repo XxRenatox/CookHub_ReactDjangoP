@@ -19,6 +19,9 @@ urlpatterns = [
     path('api/login/', views.login_user, name="login_user"),
     path('api/register/', views.register_user, name="register_user"),
     
+    # User
+    path('api/user/addpreference/<uuid:user_id>/', views.add_preference, name='add_preference'),
+    
     # Subscriptions
     
     path('api/subs/subscribe/', views.subscribe, name='subscribe'),

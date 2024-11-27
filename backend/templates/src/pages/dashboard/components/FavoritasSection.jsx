@@ -1,7 +1,7 @@
 import React from "react";
 import Recipes from "../../common/Recipes";
 
-function FavoritasSection({ darkMode }) {
+function FavoritasSection({ darkMode, userinfo }) {
   return (
     <main className={`p-6 min-h-screen transition-colors duration-300 ${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-800"}`}>
       <header className="text-center mb-8">
