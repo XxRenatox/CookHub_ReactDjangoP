@@ -201,7 +201,7 @@ function CreateRecipeSection({ darkMode, userinfo }) {
             </div>
 
             <div>
-              <label className="block font-semibold mb-1">Área</label>
+              <label className="block font-semibold mb-1">Nacionalidad</label>
               <input
                 type="text"
                 name="area"

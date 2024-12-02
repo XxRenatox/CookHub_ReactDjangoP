@@ -182,5 +182,3 @@ const getData = async (categorias) => {
         console.log(`Finished processing category: ${categoria}`);
     }
 };
-
-getData(categorias)

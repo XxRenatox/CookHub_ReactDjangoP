@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FacebookIcon, GoogleIcon } from '../common/Icons';
+import { FacebookIcon, GoogleIcon } from '../../components/common/Icons';
 import { useNavigate } from 'react-router-dom';
 import { handleSubmit } from '../../controllers/auth/loginController';
 
@@ -41,19 +41,8 @@ const LoginForm = ({ toggleForm, onSubmit }) => (
     <form onSubmit={onSubmit}>
       <InputField id="email" label="Correo Electrónico" type="email" />
       <InputField id="password" label="Contraseña" type="password" />
-      <div className="text-right mb-4">
-        <a href="#" className="text-gray-400 text-sm">¿Olvidaste tu contraseña?</a>
-      </div>
-      <button type="submit" className="w-full bg-green-600 text-gray-800 py-2 rounded-lg flex items-center justify-center hover:bg-green-700 transition-colors mb-4">
+      <button type="submit" className="w-full bg-green-600 text-gray-800 py-2 rounded-lg flex items-center justify-center hover:bg-green-700 transition-colors mb-4 mt-24">
         Iniciar Sesion
-      </button>
-      <button type="button" className="w-full bg-white text-gray-800 py-2 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors mb-4">
-        <img src={GoogleIcon} alt="Google" className="w-5 h-5 mr-2" />
-        Iniciar Sesion con Google
-      </button>
-      <button type="button" className="w-full bg-blue-800 text-white py-2 rounded-lg flex items-center justify-center hover:bg-blue-900 transition-colors mb-4">
-        <img src={FacebookIcon} alt="Facebook" className="w-5 h-5 mr-2" />
-        Iniciar Sesion con Facebook
       </button>
     </form>
     <p className="text-center text-gray-400 text-sm">

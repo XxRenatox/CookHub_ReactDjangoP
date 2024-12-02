@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import Navbar from "../common/Navbar";
-import Recipes from "../common/Recipes";
+import Navbar from "../../components/common/Navbar";
+import Recipes from "../../components/recipes/Recipes";
+import ButtonCategories from "../home/components/ButtonCategories";
 
 function CategoriePage() {
   const [darkMode, setDarkMode] = useState(false);
@@ -19,6 +20,7 @@ function CategoriePage() {
           darkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"
         } transition-colors duration-300 pt-20`}
       >
+        <ButtonCategories darkMode={darkMode} />
         <Recipes categoria={categoryName} darkMode={darkMode} />
       </main>
     </>

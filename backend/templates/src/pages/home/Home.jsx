@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import NavBar from "../common/Navbar";
-import Recipes from "../common/Recipes";
-import Footer from "../common/Footer";
+import NavBar from "../../components/common/Navbar";
+import Footer from "../../components/common/Footer";
+import Recipes from "../../components/recipes/Recipes";
 import AboutUs from "./components/AboutUs";
 import Subscriptions from "./components/SubsSection";
 import ButtonCategories from "./components/ButtonCategories";

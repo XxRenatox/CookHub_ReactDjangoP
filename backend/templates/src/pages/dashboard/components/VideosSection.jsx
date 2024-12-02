@@ -1,6 +1,5 @@
-
-import React, { useEffect, useState } from "react";
-import { supabase } from "../../../code/supabase";
+import React, { useState, useEffect } from "react";
+import { getVideos } from "../../../controllers/panel/dashboard";
 
 function VideosSection({ darkMode, userinfo }) {
   const [videos, setVideos] = useState([]);
@@ -10,33 +9,40 @@ function VideosSection({ darkMode, userinfo }) {
 
   useEffect(() => {
     const fetchVideos = async () => {
-      setLoading(true);
       try {
-        const { data, error } = await supabase
-          .from("recetas")
-          .select("youtube_link, titulo")
-          .eq("categoria", userinfo && userinfo.preferencia ? userinfo.preferencia : '')
-          .limit(limit);
-
-        if (error) {
-          setError(error);
-        } else {
-          const filteredVideos = data.filter(item => item.youtube_link && item.youtube_link.trim() !== '');
-          setVideos(filteredVideos);
-        }
-      } catch (error) {
-        setError(error);
+        const videoData = await getVideos(userinfo);
+        setVideos(videoData);
+      } catch (err) {
+        console.error("Error fetching videos:", err);
+        setError("Hubo un problema cargando los videos");
       } finally {
         setLoading(false);
       }
     };
+  
     fetchVideos();
   }, [userinfo]);
 
   const getVideoId = (url) => {
     const urlParams = new URLSearchParams(new URL(url).search);
-    return urlParams.get('v');
+    return urlParams.get("v");
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p>Cargando videos...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p>{error}</p>
+      </div>
+    );
+  }
 
   return (
     <main
@@ -50,51 +56,41 @@ function VideosSection({ darkMode, userinfo }) {
           ¡Mira Video Tutoriales de tus recetas!
         </p>
       </header>
-      {loading ? (
-        <div className="text-center">
-          <p>Cargando...</p>
-        </div>
-      ) : error ? (
-        <div className="text-center">
-          <p>Error: {error.message}</p>
-        </div>
-      ) : (
-        <section>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {videos.map((item, index) => {
-              const videoId = getVideoId(item.youtube_link);
-              const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+      <section>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {videos.map((item, index) => {
+            const videoId = getVideoId(item.youtube_link);
+            const embedUrl = `https://www.youtube.com/embed/${videoId}`;
 
-              return (
-                <div
-                  key={index}
-                  className={`rounded-2xl border-4 shadow-md mb-4 p-4 ${
-                    darkMode
-                      ? "bg-gray-800 border-gray-700 text-white"
-                      : "bg-white border-slate-300 text-black"
-                  }`}
-                >
-                  <div className="aspect-w-16 aspect-h-9">
-                    <iframe
-                      src={embedUrl}
-                      title={item.titulo}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      className="w-full h-64"
-                    ></iframe>
-                  </div>
-                  <p className="mt-2">Tutorial sobre: {item.titulo}</p>
+            return (
+              <div
+                key={index}
+                className={`rounded-2xl border-4 shadow-md mb-4 p-4 ${
+                  darkMode
+                    ? "bg-gray-800 border-gray-700 text-white"
+                    : "bg-white border-slate-300 text-black"
+                }`}
+              >
+                <div className="aspect-w-16 aspect-h-9">
+                  <iframe
+                    src={embedUrl}
+                    title={item.titulo}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-64"
+                  ></iframe>
                 </div>
-              );
-            })}
+                <p className="mt-2">Tutorial sobre: {item.titulo}</p>
+              </div>
+            );
+          })}
+        </div>
+        {videos.length === limit && (
+          <div className="text-center">
+            <p>Mostrando {limit} videos de un total de {videos.length}</p>
           </div>
-          {videos.length === limit && (
-            <div className="text-center">
-              <p>Mostrando {limit} videos de un total de {videos.length}</p>
-            </div>
-          )}
-        </section>
-      )}
+        )}
+      </section>
     </main>
   );
 }

@@ -110,6 +110,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
 ]
 
+
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Seguridad para producción (actualiza cuando despliegues)

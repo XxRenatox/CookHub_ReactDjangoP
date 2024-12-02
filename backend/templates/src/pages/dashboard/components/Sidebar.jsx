@@ -14,7 +14,7 @@ import {
   ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import { Disclosure } from "@headlessui/react";
-import DarkModeButton from "../../common/ThemeSwitcher";
+import DarkModeButton from "../../../components/common/ThemeSwitcher";
 import { UserCircleIcon } from "@heroicons/react/20/solid";
 
 const options = [

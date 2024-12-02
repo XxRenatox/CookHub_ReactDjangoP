@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Footer from "../common/Footer";
+import Footer from "../../components/common/Footer";
 import Sidebar from "./components/Sidebar";
 import RecetasSection from "./components/RecetasSection";
 import FavoritasSection from "./components/FavoritasSection";
@@ -10,6 +10,7 @@ import SettingsSection from "./components/SettingsSection";
 import CreateRecipeSection from "./components/premium/CreateRecipeSection";
 import { jwtDecode } from "jwt-decode";
 import PanelAdmin from "./components/admin/PanelAdmin";
+import MyRecipesSection from "./components/premium/MyRecipesSection";
 
 const Dashboard = () => {
   const [activeSection, setActiveSection] = useState("Home");
@@ -41,6 +42,8 @@ const Dashboard = () => {
         return <TecnicasSection darkMode={darkMode} userinfo={userinfo}/>
       case "Tutoriales":
         return <VideosSection darkMode={darkMode} userinfo={userinfo}/>
+      case "Mis Recetas":
+          return <MyRecipesSection darkMode={darkMode} userinfo={userinfo}/>
       case "Crear Receta":
         return <CreateRecipeSection darkMode={darkMode} userinfo={userinfo}/>
       case "Opciones":

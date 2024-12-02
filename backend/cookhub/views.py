@@ -31,29 +31,60 @@ def get_products(request):
 # Obtener recetas con filtros
 def get_recipes(request):
     try:
+        # Obtener los parámetros de la URL
         categoria = request.GET.get('categoria')
-        filtro = request.GET.get('filtro')
-        pop = request.GET.get('calificacion')
-        cantidad = request.GET.get('cantidad', 10)  # Valor por defecto
+        filtro = request.GET.get('nivel_dificultad')  # Este es el filtro de dificultad
+        pop = request.GET.get('calificacion')  # Si se solicita ordenar por calificación
+        cantidad = int(request.GET.get('cantidad', 10))  # Valor por defecto 10
 
+        # Iniciar la consulta a la base de datos
         query = supabase.table("recetas").select("*").limit(cantidad)
 
+        # Si se solicita ordenar por calificación
         if pop:
             query = query.order("calificacion", desc=True)
 
+        # Filtro por categoría, si se proporciona
         if categoria:
             query = query.eq("categoria", categoria)
 
+        # Filtro por nivel de dificultad (si se proporciona)
         if filtro:
             query = query.eq("nivel_dificultad", filtro)
 
+        # Ejecutar la consulta
         query_result = query.execute()
         data = query_result.data if query_result.data else []
 
+        # Devolver las recetas obtenidas como respuesta JSON
         return JsonResponse({'recipes': data}, status=200)
+
     except Exception as e:
         print(e)
         return JsonResponse({'error': 'Error interno al obtener recetas'}, status=500)
+
+@csrf_exempt
+def get_recipes_by_ids(request):
+    try:
+        data = json.loads(request.body)
+        ids_param = data.get('ids')
+
+        if not ids_param:
+            return JsonResponse({'error': 'No se proporcionaron IDs'}, status=400)
+
+        # Extraer solo los valores de 'receta_id'
+        ids = [item['receta_id'] for item in ids_param]
+
+        # Realizar la consulta a Supabase
+        query = supabase.table("recetas").select("*").in_("id", ids)
+        response = query.execute()
+        
+        return JsonResponse(response.data, safe=False)
+
+    except Exception as e:
+        print(e)
+        return JsonResponse({'error': 'Error interno al obtener recetas'}, status=500)
+
 
 # Enviar calificación
 @csrf_exempt
@@ -125,7 +156,6 @@ def login_user(request):
             return JsonResponse({'error': 'Error interno del servidor'}, status=500)
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 
-
 @csrf_exempt
 def register_user(request):
     if request.method == 'POST':
@@ -135,10 +165,11 @@ def register_user(request):
             passwd = data.get("contrasena")
             username = data.get("nombre")
 
+            # Verificar si faltan campos
             if not email or not passwd or not username:
                 return JsonResponse({'error': 'Faltan campos obligatorios'}, status=400)
 
-            # Verificar si el correo ya existe
+            # Verificar si el correo ya está registrado
             existing_user = supabase.table("usuarios").select("*").eq("correo_electronico", email).execute()
             if existing_user.data:
                 return JsonResponse({'error': 'Este correo ya está registrado'}, status=409)
@@ -156,27 +187,32 @@ def register_user(request):
                 return JsonResponse({'error': 'Error al crear el usuario'}, status=500)
 
             # Generar el token JWT
-            user_id = new_user.data[0]['id']
+            user_data = new_user.data[0]  # Obtener los datos del primer usuario creado
+            user_id = user_data['id']
             payload = {
                 "user_id": user_id,
                 "correo_electronico": email,
-                "nombre":username,
-                "premium": new_user.data[0]["es_premium"],
-                "admin": new_user.data[0]["es_admin"],
-                "preferencia": new_user[0]["preferencia"],
+                "nombre": username,
+                "premium": user_data.get("es_premium", False),  # Usamos .get para manejar la ausencia de la clave
+                "admin": user_data.get("es_admin", False),  # Lo mismo para admin
+                "preferencia": user_data.get("preferencia", None),  # También usamos .get para manejar si no existe el campo
                 "exp": datetime.utcnow() + timedelta(seconds=JWT_EXPIRATION_SECONDS),
             }
+
+            # Codificar el JWT
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
+            # Ahora se envía el token junto con el mensaje
             return JsonResponse({'message': 'Usuario creado con éxito', 'token': token}, status=201)
 
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Formato de datos inválido'}, status=400)
         except Exception as e:
-            print(e)
+            print(e)  # Esto es para depuración
             return JsonResponse({'error': 'Error interno del servidor'}, status=500)
+    
+    # Si el método no es POST
     return JsonResponse({'error': 'Método no permitido'}, status=405)
-
 
 @csrf_exempt
 def create_recipe(request):
@@ -232,7 +268,7 @@ def create_recipe(request):
             "imagen": image_url,
             "instrucciones": instrucciones,
             "categoria": categoria,
-            "area": area,
+            "nacionalidad": area,
             "youtube_link": "",
             "ingredientes": ingredientes_parsed,  # Aquí usamos los ingredientes procesados
             "calificacion": 0,
@@ -341,6 +377,8 @@ def add_preference(request, user_id):
 def set_fav(request, user_id, recipe_id):
     if request.method == 'POST':
         try:
+            user_id = str(user_id)
+            recipe_id = str(recipe_id)
             # Validar que el usuario existe
             user = supabase.table("usuarios").select("*").eq("id", user_id).execute()
             if not user.data:
@@ -363,12 +401,14 @@ def set_fav(request, user_id, recipe_id):
                 return JsonResponse({'message': 'La receta ya está en favoritos'}, status=400)
 
             # Insertar en la tabla
-            supabase.table("recetas_favoritas").insert({"receta_id": recipe_id, "usuario_id": user_id}).execute()
+            result = supabase.table("recetas_favoritas").insert({"receta_id": recipe_id, "usuario_id": user_id}).execute()
+
+
             return JsonResponse({'message': 'Receta agregada a favoritos', 'status': 'success'}, status=200)
 
         except Exception as e:
             print(f"Error interno: {e}")
-            return JsonResponse({'message': 'Error interno del servidor'}, status=500)
+            return JsonResponse({'message': 'Error interno del servidor', 'error': str(e)}, status=500)
 
     elif request.method == 'GET':
         try:
@@ -385,9 +425,18 @@ def set_fav(request, user_id, recipe_id):
 
         except Exception as e:
             print(f"Error interno: {e}")
-            return JsonResponse({'message': 'Error interno del servidor'}, status=500)
+            return JsonResponse({'message': 'Error interno del servidor', 'error': str(e)}, status=500)
 
     return JsonResponse({'message': 'Método no permitido'}, status=405)
+
+def get_fav_recipes(request, user_id):
+    try:
+        favorites = supabase.table("recetas_favoritas").select("receta_id").eq("usuario_id", user_id).execute()
+        print(favorites)
+        return JsonResponse({'favorites': favorites.data}, status=200)
+    except Exception as e:
+        print(e)
+        return JsonResponse({"error": "Error interno al obtener datos"}, status=500)
 
 def get_datausers_datasubs(request):
     try:
@@ -401,3 +450,46 @@ def get_datausers_datasubs(request):
     except Exception as e:
         print(e)
         return JsonResponse({"error": "Error interno al obtener datos"}, status=500)
+
+@csrf_exempt
+def get_videos_recipes(request, categoria):
+    if request.method == 'GET':
+        try:
+            query = supabase.table("recetas").select("youtube_link, titulo").eq("categoria", categoria).limit(9).execute()
+            data_videos = query.data if query.data else []
+
+            return JsonResponse({"videos": data_videos}, status=200)
+        except Exception as e:
+            print(e)
+            return JsonResponse({"error": "Error interno al obtener datos"}, status=500)
+    return JsonResponse({'message': 'Método no permitido'}, status=405)
+
+def get_myrecipes(request, user_id):
+    try:
+        recipes = supabase.table("recetas_usuarios").select("receta_id").eq("usuario_id", user_id).execute()
+        return JsonResponse({'recipes': recipes.data}, status=200)
+    except Exception as e:
+        print(e)
+        return JsonResponse({"error": "Error interno al obtener datos"}, status=500)
+    
+@csrf_exempt
+def remove_from_favorites(request, receta_id, user_id):
+    try:
+        # Buscar si la receta está en la tabla de favoritos
+        response = supabase.table("recetas_favoritas") \
+            .delete() \
+            .eq("receta_id", receta_id) \
+            .eq("usuario_id", user_id) \
+            .execute()
+
+        # Verificar si se eliminó algún registro
+        if response.data:
+            return JsonResponse({"message": "Receta eliminada de favoritos"}, status=200)
+        else:
+            return JsonResponse({"error": "La receta no estaba en tus favoritos"}, status=404)
+
+    except Exception as e:
+        # Imprimir el error para depuración
+        print(f"Error al eliminar de favoritos: {e}")
+        return JsonResponse({"error": "Error interno al eliminar la receta de favoritos"}, status=500)
+    
