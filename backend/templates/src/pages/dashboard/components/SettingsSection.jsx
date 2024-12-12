@@ -2,20 +2,20 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const categorias = [
-  { es: "Cordero", en: "Lamb" },           // Lamb
-  { es: "Misceláneo", en: "Miscellaneous" },        // Miscellaneous
-  { es: "Pasta", en: "Pasta" },             // Pasta
-  { es: "Cerdo", en: "Pork" },             // Pork
-  { es: "Acompañamiento", en: "Side" },    // Side
-  { es: "Mariscos", en: "Seafood" },          // Seafood
-  { es: "Entrante", en: "Starter" },          // Starter
-  { es: "Vegano", en: "Vegan" },            // Vegan
-  { es: "Vegetariano", en: "Vegetarian" },       // Vegetarian
-  { es: "Res", en: "Beef" },               // Beef
-  { es: "Desayuno", en: "Breakfast" },          // Breakfast
-  { es: "Pollo", en: "Chicken" },             // Chicken
-  { es: "Postre", en: "Dessert" },            // Dessert
-  { es: "Cabra", en: "Goat" }              // Goat
+  { es: "Cordero", en: "Lamb" }, // Lamb
+  { es: "Misceláneo", en: "Miscellaneous" }, // Miscellaneous
+  { es: "Pasta", en: "Pasta" }, // Pasta
+  { es: "Cerdo", en: "Pork" }, // Pork
+  { es: "Acompañamiento", en: "Side" }, // Side
+  { es: "Mariscos", en: "Seafood" }, // Seafood
+  { es: "Entrante", en: "Starter" }, // Starter
+  { es: "Vegano", en: "Vegan" }, // Vegan
+  { es: "Vegetariano", en: "Vegetarian" }, // Vegetarian
+  { es: "Res", en: "Beef" }, // Beef
+  { es: "Desayuno", en: "Breakfast" }, // Breakfast
+  { es: "Pollo", en: "Chicken" }, // Chicken
+  { es: "Postre", en: "Dessert" }, // Dessert
+  { es: "Cabra", en: "Goat" }, // Goat
 ];
 
 function SettingsSection({ darkMode, userinfo }) {
@@ -49,12 +49,14 @@ function SettingsSection({ darkMode, userinfo }) {
                 ? userinfo.correo_electronico
                 : "No disponible"}
             </li>
-              <li>
-                <span className="font-semibold">Preferencia Alimenticia:</span>{" "}
-                {userinfo && userinfo.preferencia
-                  ? categorias.find(categoria => categoria.en === userinfo.preferencia)?.es
-                  : "No disponible"}
-              </li>
+            <li>
+              <span className="font-semibold">Preferencia Alimenticia:</span>{" "}
+              {userinfo && userinfo.preferencia
+                ? categorias.find(
+                    (categoria) => categoria.en === userinfo.preferencia
+                  )?.es
+                : "No disponible"}
+            </li>
             <li>
               <span className="font-semibold">Premium:</span>{" "}
               {userinfo && userinfo.premium ? "Sí" : "No"}
@@ -69,26 +71,11 @@ function SettingsSection({ darkMode, userinfo }) {
           </h2>
           <ul className="space-y-3">
             <li>
-              <button className="bg-indigo-600 text-white w-64 py-2 rounded-lg hover:bg-indigo-700 focus:outline-none">
-                Cambiar nombre de usuario
-              </button>
-            </li>
-            <li>
-              <button className="bg-[#019863] text-white w-64 py-2 rounded-lg hover:bg-[#019833d8] focus:outline-none">
-                <Link to='/FormularioSubscripcion'>
-                  Hacerse premium
-                </Link>
-              </button>
-            </li>
-            <li>
-              <button className="bg-yellow-600 text-white w-64 py-2 rounded-lg hover:bg-yellow-700 focus:outline-none">
-                Cambiar contraseña
-              </button>
-            </li>
-            <li>
-              <button className="bg-red-600 text-white w-64 py-2 rounded-lg hover:bg-red-700 focus:outline-none">
-                Eliminar cuenta
-              </button>
+              {userinfo && userinfo.premium ? null : (
+                <button className="bg-[#019863] text-white w-64 py-2 rounded-lg hover:bg-[#019833d8] focus:outline-none">
+                  <Link to="/FormularioSubscripcion">Hacerse premium</Link>
+                </button>
+              )}
             </li>
           </ul>
         </div>

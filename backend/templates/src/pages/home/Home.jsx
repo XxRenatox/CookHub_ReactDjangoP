@@ -43,16 +43,6 @@ function Home() {
               Explora recetas personalizadas, aprende técnicas y lleva tus
               habilidades culinarias al siguiente nivel.
             </p>
-            <div className="relative max-w-md mx-auto md:mx-0">
-              <input
-                type="text"
-                placeholder="Buscar recetas..."
-                className="w-full p-4 pl-12 rounded-full border border-gray-300 text-gray-900 focus:outline-none"
-              />
-              <button className="absolute right-2 top-2 bg-green-500 text-white font-semibold py-2 px-4 rounded-full hover:bg-green-600 transition duration-300">
-                Buscar
-              </button>
-            </div>
           </div>
         </section>
 
